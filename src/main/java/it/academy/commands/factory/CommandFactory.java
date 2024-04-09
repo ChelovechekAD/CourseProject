@@ -18,14 +18,7 @@ public class CommandFactory {
         return factory;
     }
 
-    public Command defineController(String command) {
-        if (command != null && !command.isEmpty()) {
-            try {
-                return CommandEnum.valueOf(command.toUpperCase()).getCurrentCommand();
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
+    public Command defineController(CommandEnum command) {
+        return command.getCurrentCommand();
     }
 }

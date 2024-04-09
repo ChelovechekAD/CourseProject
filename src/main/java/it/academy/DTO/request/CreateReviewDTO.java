@@ -11,7 +11,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CreateReviewDAO implements Serializable {
+public class CreateReviewDTO implements Serializable {
     private String description;
     private Double rate;
     private Long productId;

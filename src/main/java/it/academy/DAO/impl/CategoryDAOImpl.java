@@ -1,8 +1,15 @@
 package it.academy.DAO.impl;
 
 import it.academy.DAO.CategoryDAO;
-import it.academy.models.Category;
+import it.academy.models.*;
+import it.academy.models.embedded.CartItemPK;
+import it.academy.models.embedded.CartItemPK_;
+import it.academy.utilities.Constants;
 import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Root;
 
 import java.util.List;
 
@@ -14,25 +21,21 @@ public class CategoryDAOImpl extends DAOImpl<Category, Long> implements Category
 
     @Override
     public Category getCategoryByName(String categoryName) {
-        TypedQuery<Category> query = transactionHelper.entityManager()
-                .createQuery("select c from Category c where categoryName = :categoryName", Category.class);
-        query.setParameter("categoryName", categoryName);
-        return query.getSingleResult();
+
+        CriteriaBuilder cb = transactionHelper.criteriaBuilder();
+        CriteriaQuery<Category> cq = cb.createQuery(Category.class);
+        Root<Category> root = cq.from(Category.class);
+
+        cq.select(root)
+                .where(cb.equal(root.get(Category_.CATEGORY_NAME), categoryName));
+
+        return transactionHelper.entityManager().createQuery(cq).getSingleResult();
     }
 
     @Override
-    public Long countOf() {
-        return transactionHelper.entityManager()
-                .createQuery("select count (c) from Category c", Long.class)
-                .getSingleResult();
-    }
-
-    @Override
-    public List<Category> getCategoriesPage(Integer countPerPage, Integer pageNum) {
+    public List<Category> getCategoriesPage() {
          return transactionHelper.entityManager()
-                .createQuery("select c from Category c", Category.class)
-                .setFirstResult(countPerPage * (pageNum - 1))
-                .setMaxResults(countPerPage)
+                .createQuery(Constants.SELECT_FROM_CATEGORY, Category.class)
                 .getResultList();
     }
 }

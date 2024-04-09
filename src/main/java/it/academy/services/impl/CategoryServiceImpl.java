@@ -25,10 +25,10 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDTO getCategoryByName(@NonNull String name){
         return transactionHelper.transaction(()->Converter.convertCategoryEntityToDTO(categoryDAO.getCategoryByName(name)));
     }
-    public CategoriesDTO getAllCategoriesPage(@NonNull Integer countPerPage, @NonNull Integer pageNum){
-        List<Category> list = categoryDAO.getCategoriesPage(countPerPage, pageNum);
-        Long count = categoryDAO.getCountOf();
-        return Converter.convertCategoriesListToDTO(list, count);
+    public CategoriesDTO getAllCategories(){
+
+        List<Category> list = transactionHelper.transaction(categoryDAO::getCategoriesPage);
+        return Converter.convertCategoriesListToDTO(list);
     }
 
 }

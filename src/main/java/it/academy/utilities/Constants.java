@@ -1,12 +1,17 @@
 package it.academy.utilities;
 
+import com.google.gson.Gson;
+
 public class Constants {
+
+    public static final Gson GSON = new Gson();
 
     //JWT AUTH DATA
     public static final String JWT_ACCESS_SECRET = "gpgdKY9zR4hebFb2wT67AlgsKmbTOmKoyqmGym1dKmM=";
     public static final String JWT_REFRESH_SECRET = "7+bbUaAIaRFDce4rxQLu5QFPqooqHLgfN5mnDB7PNT4=";
     public static final Integer JWT_ACCESS_EXPIRATION = 1;
     public static final Integer JWT_REFRESH_EXPIRATION = 60;
+    public static final String TOKEN_PATTERN = "Bearer ";
     //END
 
     public static final String NULL_EXCEPTION_MESSAGE = "Object is null.";
@@ -42,7 +47,7 @@ public class Constants {
 
     public static final String SELECT_FROM_REFRESH_TOKEN_WHERE_EMAIL = "select rt from RefreshToken  rt where userEmail=:email";
     public static final String SELECT_COUNT_FROM_USER_WHERE_EMAIL_USER = "select count(u) from User u where email=:userEmail";
-    public static final String SELECT_COUNT_FROM_REFRESH_TOKEN_WHERE_EMAIL = "select count(rt) from RefreshToken rt where userEmail:email";
+    public static final String SELECT_COUNT_FROM_REFRESH_TOKEN_WHERE_EMAIL = "select count(rt) from RefreshToken rt where userEmail=:email";
     public static final String SELECT_COUNT_FROM_REFRESH_TOKEN_WHERE_REFRESH_TOKEN = "select count(rt) from RefreshToken rt where refreshToken=:token";
     public static final String DELETE_FROM_REFRESH_TOKEN_WHERE_REFRESH_TOKEN = "delete from RefreshToken where refreshToken=:token";
     public static final String TOKEN_NOT_FOUND = "Token not found!";
@@ -53,4 +58,20 @@ public class Constants {
     public static final String REVIEW_NOT_FOUND = "Review not found!";
     public static final String CART_ITEM_ALREADY_EXIST = "Cart item already exist!";
     public static final String REVIEW_ALREADY_EXIST = "Review already exist!";
+    public static final String SOMETHING_WENT_WRONG = "Something went wrong!";
+    public static final String SUCCESSFULLY_CREATED = "User successfully created!";
+    public static final String REGISTRATION_REQUEST_OBJECT_NAME = "registrationRequest";
+    public static final String LOGOUT_MESSAGE = "Logout success!";
+    public static final String REFRESH_TOKEN_ATTR_NAME = "refresh-token";
+    public static final String TOKEN_INVALID = "Token invalid!";
+    public static final String UNAUTHORIZED = "Unauthorized";
+    public static final String AUTHORIZATION = "Authorization";
+    public static final String ACCESS_DENIED = "Access denied!";
+    public static final String COMMAND_ENUM = "CommandEnum";
+    public static final String CATEGORY_ID_PARAM_KEY = "categoryId";
+    public static final String PAGE_NUM_PARAM_KEY = "pageNum";
+    public static final String COUNT_PER_PAGE_PARAM_KEY = "countPerPage";
+    public static final String SELECT_FROM_GENERIC = "select o from %s o";
+    public static final String SELECT_COUNT_FROM_GENERIC = "select count(i) from %s i";
+    public static final String SELECT_FROM_CATEGORY = "select c from Category c";
 }

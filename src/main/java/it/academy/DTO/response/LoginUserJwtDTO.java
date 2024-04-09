@@ -1,5 +1,6 @@
 package it.academy.DTO.response;
 
+import it.academy.models.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,5 +15,6 @@ public class LoginUserJwtDTO {
     private String type = "Bearer";
     private String accessToken;
     private String refreshToken;
+    private UserDTO userDTO;
 
 }

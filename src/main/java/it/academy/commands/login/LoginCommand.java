@@ -1,16 +1,38 @@
 package it.academy.commands.login;
 
+import it.academy.DTO.response.LoginUserJwtDTO;
 import it.academy.commands.Command;
+import it.academy.exceptions.UserNotFoundException;
+import it.academy.exceptions.WrongPasswordException;
+import it.academy.services.AuthService;
+import it.academy.services.impl.AuthServiceImpl;
+import it.academy.utilities.Constants;
+import it.academy.utilities.ConverterJson;
+import it.academy.utilities.ResponseHelper;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.stream.Collectors;
+
+import static it.academy.utilities.Constants.GSON;
 
 public class LoginCommand implements Command {
     @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("text/html");
-        response.getWriter().write("ALL work");
-        return "";
+    public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        try {
+            AuthService authService = new AuthServiceImpl();
+            String req = request.getReader().lines().collect(Collectors.joining());
+            System.out.println(req);
+            LoginUserJwtDTO dto = authService.loginUser(ConverterJson.convertJsonLoginToDTO(req));
+            String resp = GSON.toJson(dto);
+            Cookie token = new Cookie(Constants.REFRESH_TOKEN_ATTR_NAME, dto.getRefreshToken());
+            token.setMaxAge(Constants.JWT_REFRESH_EXPIRATION*60);
+            response.addCookie(token);
+            ResponseHelper.sendJsonResponse(response, resp);
+        }catch (UserNotFoundException | WrongPasswordException e) {
+            ResponseHelper.sendResponseWithStatus(response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+        }
     }
 }

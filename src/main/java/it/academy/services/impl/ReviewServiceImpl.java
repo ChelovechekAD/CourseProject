@@ -6,7 +6,7 @@ import it.academy.DAO.UserDAO;
 import it.academy.DAO.impl.ProductDAOImpl;
 import it.academy.DAO.impl.ReviewDAOImpl;
 import it.academy.DAO.impl.UserDAOImpl;
-import it.academy.DTO.request.CreateReviewDAO;
+import it.academy.DTO.request.CreateReviewDTO;
 import it.academy.DTO.response.ReviewDTO;
 import it.academy.DTO.response.ReviewsDTO;
 import it.academy.exceptions.*;
@@ -34,27 +34,29 @@ public class ReviewServiceImpl implements ReviewService {
     private final ProductDAO productDAO = new ProductDAOImpl();
     private final UserDAO userDAO = new UserDAOImpl();
 
-    public void createReview(@NonNull CreateReviewDAO createReviewDAO) {
+
+    @Override
+    public void createReview(CreateReviewDTO createReviewDTO) {
         Runnable runnable = () -> {
-            Product product = productDAO.get(createReviewDAO.getProductId());
-            User user = userDAO.get(createReviewDAO.getUserId());
+            Product product = productDAO.get(createReviewDTO.getProductId());
+            User user = userDAO.get(createReviewDTO.getUserId());
             validateReviewPK(user, product);
             ReviewPK reviewPK = new ReviewPK(user, product);
             if (reviewDAO.get(reviewPK) != null) {
                 throw new ReviewExistException();
             }
             Review review = Review.builder()
-                    .rating(createReviewDAO.getRate())
+                    .rating(createReviewDTO.getRate())
                     .reviewPK(reviewPK)
-                    .description(createReviewDAO.getDescription())
+                    .description(createReviewDTO.getDescription())
                     .build();
             reviewDAO.create(review);
             updateTotalRatingForProduct(product);
         };
         transactionHelper.transaction(runnable);
-
     }
 
+    @Override
     public ReviewDTO getSingleReviewOnProductByUserId(@NonNull Long userId, @NonNull Long prodId) {
         Supplier<ReviewDTO> supplier = () -> {
             User user = userDAO.get(userId);
@@ -70,6 +72,7 @@ public class ReviewServiceImpl implements ReviewService {
         return transactionHelper.transaction(supplier);
     }
 
+    @Override
     public void deleteReviewOnProductByUserId(@NonNull Long userId, @NonNull Long prodId) {
         Runnable runnable = () -> {
             User user = userDAO.get(userId);
@@ -86,6 +89,7 @@ public class ReviewServiceImpl implements ReviewService {
         transactionHelper.transaction(runnable);
     }
 
+    @Override
     public ReviewsDTO getAllReviewsPage(@NonNull Integer countPerPage, @NonNull Integer pageNum){
         Supplier<ReviewsDTO> supplier = () -> {
             List<Review> list = transactionHelper.transaction(() -> reviewDAO.getPage(countPerPage, pageNum));

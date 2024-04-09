@@ -13,7 +13,7 @@ public class RoleDAOImpl extends DAOImpl<Role, Short> implements RoleDAO {
     public Role getByRoleName(RoleEnum roleEnum) {
         return transactionHelper.entityManager()
                 .createQuery("select r from Role r where role = :roleName", Role.class)
-                .setParameter("roleName", roleEnum.name())
+                .setParameter("roleName", roleEnum)
                 .getSingleResult();
     }
 }

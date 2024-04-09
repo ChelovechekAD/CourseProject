@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @UtilityClass
 public class Converter {
 
-    public static Product convertProdDTOToEntity(ProductDTO productDTO){
+    public static Product convertCreateProdDTOToEntity(CreateProductDTO productDTO){
         return Product.builder()
                 .id(productDTO.getId())
                 .categoryId(null)
@@ -31,6 +31,7 @@ public class Converter {
                 .imageLink(product.getImageLink())
                 .name(product.getName())
                 .price(product.getPrice())
+                .rating(product.getRating())
                 .build();
     }
 
@@ -92,13 +93,12 @@ public class Converter {
                 .categoryName(categoryDTO.getCategoryName())
                 .build();
     }
-    public static CategoriesDTO convertCategoriesListToDTO(List<Category> categories, Long count){
+    public static CategoriesDTO convertCategoriesListToDTO(List<Category> categories){
         List<CategoryDTO> categoryDTOList = categories.stream()
                 .map(Converter::convertCategoryEntityToDTO)
                 .collect(Collectors.toList());
         return CategoriesDTO.builder()
                 .categoryDTOList(categoryDTOList)
-                .countOfCategories(count)
                 .build();
     }
 
@@ -132,17 +132,22 @@ public class Converter {
         List<String> roles = user.getRoleSet().stream()
                 .map(r -> r.getRole().name())
                 .collect(Collectors.toList());
-        return UserDTO.builder()
+        UserDTO userDTO = UserDTO.builder()
                 .id(user.getId())
-                .street(user.getAddress().getStreet())
-                .building(user.getAddress().getBuilding())
-                .city(user.getAddress().getCity())
                 .email(user.getEmail())
                 .name(user.getName())
                 .surname(user.getSurname())
                 .phoneNumber(user.getPhoneNumber())
                 .roles(roles)
                 .build();
+        if (user.getAddress() == null){
+            return userDTO;
+        }
+
+        userDTO.setStreet(user.getAddress().getStreet());
+        userDTO.setBuilding(user.getAddress().getBuilding());
+        userDTO.setCity(user.getAddress().getCity());
+        return userDTO;
     }
 
     public static CartItemDTO convertListCartItemEntityToListDTO(CartItem cartItemList){

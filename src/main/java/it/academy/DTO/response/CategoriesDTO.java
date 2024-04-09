@@ -15,6 +15,5 @@ import java.util.List;
 public class CategoriesDTO {
 
     private List<CategoryDTO> categoryDTOList;
-    private Long countOfCategories;
 
 }

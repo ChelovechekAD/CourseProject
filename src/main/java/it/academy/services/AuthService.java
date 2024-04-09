@@ -8,7 +8,7 @@ import it.academy.DTO.response.UserDTO;
 import it.academy.DTO.response.UsersDTO;
 import lombok.NonNull;
 
-public interface UserService {
+public interface AuthService {
     UserDTO getUserById(@NonNull Long id);
     void regUser(@NonNull RegUserDTO regUserDTO);
     LoginUserJwtDTO loginUser(@NonNull LoginUserDTO loginUserDTO);

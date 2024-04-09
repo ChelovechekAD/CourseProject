@@ -1,7 +1,6 @@
-package it.academy.DTO.request;
+package it.academy.DTO.response;
 
-import it.academy.models.Category;
-import jakarta.persistence.*;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,6 +19,7 @@ public class ProductDTO implements Serializable {
     private String name;
     private String description;
     private Double price;
+    private Double rating;
     private String imageLink;
 
 }

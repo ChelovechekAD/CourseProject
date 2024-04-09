@@ -2,6 +2,7 @@ package it.academy.DAO.impl;
 
 import it.academy.DAO.DAO;
 import it.academy.exceptions.NotFoundException;
+import it.academy.utilities.Constants;
 import it.academy.utilities.TransactionHelper;
 
 import java.io.Serializable;
@@ -44,7 +45,7 @@ public class DAOImpl<T extends Serializable, R> implements DAO<T, R> {
     @Override
     public List<T> getPage(Integer countPerPage, Integer pageNum) {
         return transactionHelper.entityManager()
-                .createQuery("select o from Order o", tClass)
+                .createQuery(String.format(Constants.SELECT_FROM_GENERIC, tClass.getName()), tClass)
                 .setFirstResult(countPerPage * (pageNum - 1))
                 .setMaxResults(countPerPage)
                 .getResultList();
@@ -53,7 +54,7 @@ public class DAOImpl<T extends Serializable, R> implements DAO<T, R> {
     @Override
     public Long getCountOf() {
         return transactionHelper.entityManager()
-                .createQuery(String.format("select count(i) from %s i", tClass.getName()), Long.class)
+                .createQuery(String.format(Constants.SELECT_COUNT_FROM_GENERIC, tClass.getName()), Long.class)
                 .getSingleResult();
     }
 }

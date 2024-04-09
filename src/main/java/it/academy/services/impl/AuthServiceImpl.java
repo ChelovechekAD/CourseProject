@@ -1,7 +1,10 @@
 package it.academy.services.impl;
 
+import it.academy.Components.JwtProvider;
+import it.academy.DAO.RefreshTokenDAO;
 import it.academy.DAO.RoleDAO;
 import it.academy.DAO.UserDAO;
+import it.academy.DAO.impl.RefreshTokenDAOImpl;
 import it.academy.DAO.impl.RoleDAOImpl;
 import it.academy.DAO.impl.UserDAOImpl;
 import it.academy.DTO.request.LoginUserDTO;
@@ -12,10 +15,10 @@ import it.academy.DTO.response.UserDTO;
 import it.academy.DTO.response.UsersDTO;
 import it.academy.enums.RoleEnum;
 import it.academy.exceptions.*;
+import it.academy.models.RefreshToken;
 import it.academy.models.Role;
 import it.academy.models.User;
-import it.academy.services.JwtService;
-import it.academy.services.UserService;
+import it.academy.services.AuthService;
 import it.academy.utilities.Converter;
 import it.academy.utilities.TransactionHelper;
 import lombok.NonNull;
@@ -26,19 +29,21 @@ import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public class UserServiceImpl implements UserService {
+public class AuthServiceImpl implements AuthService {
 
     private final TransactionHelper transactionHelper = TransactionHelper.getTransactionHelper();
     private final UserDAO userDAO = new UserDAOImpl();
     private final RoleDAO roleDAO = new RoleDAOImpl();
-    private final JwtService jwtService = new JwtServiceImpl();
+    private final RefreshTokenDAO refreshTokenDAO = new RefreshTokenDAOImpl();
+    private final JwtProvider jwtProvider = new JwtProvider();
 
     public void regUser(@NonNull RegUserDTO regUserDTO){
+        System.out.println(regUserDTO);
         Runnable supplier = () -> {
             if (!Objects.equals(regUserDTO.getPassword(), regUserDTO.getPasswordConfirm())){
                 throw new PasswordMatchException();
             }
-            if (userDAO.existUserByEmail(regUserDTO.getEmail()) == Boolean.FALSE){
+            if (userDAO.existUserByEmail(regUserDTO.getEmail())){
                 throw new UserExistException();
             }
             User user = Converter.convertRegUserDTOToEntity(regUserDTO);
@@ -60,15 +65,16 @@ public class UserServiceImpl implements UserService {
             if (!BCrypt.checkpw(loginUserDTO.getPassword(), user.getPassword())) {
                 throw new WrongPasswordException();
             }
-            LoginUserJwtDTO loginUserJwtDTO = jwtService.getPairOfTokens(user);
-            jwtService.saveToken(loginUserJwtDTO.getRefreshToken());
+            LoginUserJwtDTO loginUserJwtDTO = getPairOfTokens(user);
+            loginUserJwtDTO.setUserDTO(Converter.convertUserEntityToDTO(user));
+            saveToken(loginUserJwtDTO.getRefreshToken()).run();
             return loginUserJwtDTO;
         };
         return transactionHelper.transaction(supplier);
     }
 
     public LoginUserJwtDTO reLoginUser(@NonNull String refreshToken){
-        return jwtService.updateTokens(refreshToken);
+        return transactionHelper.transaction(updateTokens(refreshToken));
     }
 
     public void deleteUser(@NonNull Long id){
@@ -113,5 +119,54 @@ public class UserServiceImpl implements UserService {
             return new UsersDTO(userDTOList, count);
         };
         return transactionHelper.transaction(supplier);
+    }
+
+    private Runnable saveToken(@NonNull String refreshToken){
+        return () -> {
+            String email = jwtProvider.getRefreshClaims(refreshToken).getSubject();
+            if (refreshTokenDAO.existTokenByEmail(email)) {
+                RefreshToken refreshToken1 = refreshTokenDAO.getTokenByEmail(email);
+                if (!refreshToken1.getRefreshToken().equals(refreshToken)) {
+                    return;
+                }
+                refreshToken1.setRefreshToken(refreshToken);
+                refreshTokenDAO.update(refreshToken1);
+            } else {
+                RefreshToken refreshToken1 = RefreshToken.builder()
+                        .refreshToken(refreshToken)
+                        .userEmail(email)
+                        .build();
+                refreshTokenDAO.create(refreshToken1);
+            }
+        };
+    }
+
+    private Supplier<LoginUserJwtDTO> updateTokens(@NonNull String refreshToken){
+        return () -> {
+            if(!jwtProvider.validateRefreshToken(refreshToken)) {
+                throw new RefreshTokenInvalidException();
+            }
+            String email = jwtProvider.getRefreshClaims(refreshToken).getSubject();
+            if (!userDAO.existUserByEmail(email)) {
+                throw new UserNotFoundException();
+            }
+            if (!refreshTokenDAO.existTokenByEmail(email)) {
+                throw new TokenNotFound();
+            }
+            User user = userDAO.getUserByEmail(email);
+            RefreshToken refreshToken1 = refreshTokenDAO.getTokenByEmail(email);
+            LoginUserJwtDTO loginUserJwtDTO = getPairOfTokens(user);
+            loginUserJwtDTO.setUserDTO(Converter.convertUserEntityToDTO(user));
+            refreshToken1.setRefreshToken(loginUserJwtDTO.getRefreshToken());
+            refreshTokenDAO.update(refreshToken1);
+            return loginUserJwtDTO;
+        };
+    }
+
+    private LoginUserJwtDTO getPairOfTokens(@NonNull User user){
+        return LoginUserJwtDTO.builder()
+                .refreshToken(jwtProvider.generateRefreshToken(user))
+                .accessToken(jwtProvider.generateAccessToken(user))
+                .build();
     }
 }

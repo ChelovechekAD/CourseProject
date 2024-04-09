@@ -17,7 +17,7 @@ public class UserDAOImpl extends DAOImpl<User, Long> implements UserDAO {
     @Override
     public User getUserByEmail(String email) {
         String param = Constants.SELECT_FROM_USER_WHERE_EMAIL_USER.substring(
-                Constants.SELECT_FROM_USER_WHERE_EMAIL_USER.lastIndexOf(":"));
+                Constants.SELECT_FROM_USER_WHERE_EMAIL_USER.lastIndexOf(":")+1);
         return transactionHelper.entityManager()
                 .createQuery(Constants.SELECT_FROM_USER_WHERE_EMAIL_USER, User.class)
                 .setParameter(param, email)
@@ -27,7 +27,7 @@ public class UserDAOImpl extends DAOImpl<User, Long> implements UserDAO {
     @Override
     public Boolean existUserByEmail(String email) {
         String param = Constants.SELECT_COUNT_FROM_USER_WHERE_EMAIL_USER.substring(
-                Constants.SELECT_COUNT_FROM_USER_WHERE_EMAIL_USER.lastIndexOf(":"));
+                Constants.SELECT_COUNT_FROM_USER_WHERE_EMAIL_USER.lastIndexOf(":")+1);
         return transactionHelper.entityManager()
                 .createQuery(Constants.SELECT_COUNT_FROM_USER_WHERE_EMAIL_USER, Long.class)
                 .setParameter(param, email)
