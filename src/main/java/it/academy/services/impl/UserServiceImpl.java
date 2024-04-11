@@ -6,7 +6,6 @@ import it.academy.DTO.request.RequestDataDetailsDTO;
 import it.academy.DTO.request.UpdateUserDTO;
 import it.academy.DTO.response.UserDTO;
 import it.academy.DTO.response.UsersDTO;
-import it.academy.enums.RoleEnum;
 import it.academy.exceptions.UserNotFoundException;
 import it.academy.models.User;
 import it.academy.services.UserService;
@@ -42,7 +41,7 @@ public class UserServiceImpl implements UserService {
         };
         transactionHelper.transaction(supplier);
     }
-    
+
 
     public UserDTO getUserById(@NonNull Long id) {
         Supplier<UserDTO> supplier = () -> {

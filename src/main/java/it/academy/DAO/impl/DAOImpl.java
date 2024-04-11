@@ -10,8 +10,8 @@ import java.util.List;
 
 public class DAOImpl<T extends Serializable, R> implements DAO<T, R> {
 
-    private final Class<T> tClass;
     protected TransactionHelper transactionHelper;
+    private final Class<T> tClass;
 
     public DAOImpl(Class<T> tClass) {
         transactionHelper = new TransactionHelper();

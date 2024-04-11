@@ -4,7 +4,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 
-public class HibernateUtil {
+public final class HibernateUtil {
 
     private static EntityManagerFactory ENTITY_MANAGER_FACTORY;
 

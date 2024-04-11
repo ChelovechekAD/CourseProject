@@ -14,6 +14,6 @@ public class OrderItemProductDTO {
     private Long count;
     private Double price;
     private String name;
-    private String image_link;
+    private String imageLink;
 }
 

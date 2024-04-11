@@ -36,7 +36,7 @@ public class RefreshCommand implements Command {
             }
             LoginUserJwtDTO loginUserJwtDTO = authService.reLoginUser(cookieValue);
             Cookie updateCookie = new Cookie(Constants.REFRESH_TOKEN_ATTR_NAME, loginUserJwtDTO.getRefreshToken());
-            updateCookie.setMaxAge(Constants.JWT_REFRESH_EXPIRATION * 60);
+            updateCookie.setMaxAge(Constants.JWT_REFRESH_EXPIRATION * Constants.MULTI_TIME);
             response.addCookie(updateCookie);
             String resp = GSON.toJson(loginUserJwtDTO);
             ResponseHelper.sendJsonResponse(response, resp);

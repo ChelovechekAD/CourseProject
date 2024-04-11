@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import static it.academy.utilities.Constants.GSON;
 
 public class LoginCommand implements Command {
+
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
@@ -28,7 +29,7 @@ public class LoginCommand implements Command {
             LoginUserJwtDTO dto = authService.loginUser(loginUserDTO);
             String resp = GSON.toJson(dto);
             Cookie token = new Cookie(Constants.REFRESH_TOKEN_ATTR_NAME, dto.getRefreshToken());
-            token.setMaxAge(Constants.JWT_REFRESH_EXPIRATION * 60);
+            token.setMaxAge(Constants.JWT_REFRESH_EXPIRATION * Constants.MULTI_TIME);
             response.addCookie(token);
             ResponseHelper.sendJsonResponse(response, resp);
         } catch (UserNotFoundException | WrongPasswordException e) {

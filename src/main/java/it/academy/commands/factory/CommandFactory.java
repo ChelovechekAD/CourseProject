@@ -3,7 +3,7 @@ package it.academy.commands.factory;
 
 import it.academy.commands.Command;
 
-public class CommandFactory {
+public final class CommandFactory {
 
     private static CommandFactory factory;
 

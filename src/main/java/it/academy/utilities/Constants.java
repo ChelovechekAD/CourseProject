@@ -80,4 +80,6 @@ public class Constants {
     public static final String SELECT_FROM_PRODUCT = "select p from Product p";
     public static final String CORS_REQUEST_CHECK_HEADER_PARAM = "access-control-request-method";
     public static final int LENGTH_OF_BEARER_PART = 7;
+    public static final int MULTI_TIME = 60;
+    public static final String SQL_INSERT_PARAM_SIGN = ":";
 }

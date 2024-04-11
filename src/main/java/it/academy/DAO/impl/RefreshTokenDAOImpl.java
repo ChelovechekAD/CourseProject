@@ -20,7 +20,7 @@ public class RefreshTokenDAOImpl extends DAOImpl<RefreshToken, Long> implements 
     @Override
     public RefreshToken getTokenByEmail(String email) {
         String param = Constants.SELECT_FROM_REFRESH_TOKEN_WHERE_EMAIL.substring(
-                Constants.SELECT_FROM_REFRESH_TOKEN_WHERE_EMAIL.lastIndexOf(":") + 1);
+                Constants.SELECT_FROM_REFRESH_TOKEN_WHERE_EMAIL.lastIndexOf(Constants.SQL_INSERT_PARAM_SIGN) + 1);
         return transactionHelper.entityManager()
                 .createQuery(Constants.SELECT_FROM_REFRESH_TOKEN_WHERE_EMAIL, RefreshToken.class)
                 .setParameter(param, email)
@@ -30,7 +30,7 @@ public class RefreshTokenDAOImpl extends DAOImpl<RefreshToken, Long> implements 
     @Override
     public Boolean existTokenByEmail(String email) {
         String param = Constants.SELECT_COUNT_FROM_REFRESH_TOKEN_WHERE_EMAIL.substring(
-                Constants.SELECT_COUNT_FROM_REFRESH_TOKEN_WHERE_EMAIL.lastIndexOf(":") + 1);
+                Constants.SELECT_COUNT_FROM_REFRESH_TOKEN_WHERE_EMAIL.lastIndexOf(Constants.SQL_INSERT_PARAM_SIGN) + 1);
         return transactionHelper.entityManager()
                 .createQuery(Constants.SELECT_COUNT_FROM_REFRESH_TOKEN_WHERE_EMAIL, Long.class)
                 .setParameter(param, email)
@@ -40,7 +40,7 @@ public class RefreshTokenDAOImpl extends DAOImpl<RefreshToken, Long> implements 
     @Override
     public Boolean existTokenByValue(String refreshTokenValue) {
         String param = Constants.SELECT_COUNT_FROM_REFRESH_TOKEN_WHERE_REFRESH_TOKEN.substring(
-                Constants.SELECT_COUNT_FROM_REFRESH_TOKEN_WHERE_REFRESH_TOKEN.lastIndexOf(":") + 1);
+                Constants.SELECT_COUNT_FROM_REFRESH_TOKEN_WHERE_REFRESH_TOKEN.lastIndexOf(Constants.SQL_INSERT_PARAM_SIGN) + 1);
         return transactionHelper.entityManager()
                 .createQuery(Constants.SELECT_COUNT_FROM_REFRESH_TOKEN_WHERE_REFRESH_TOKEN, Long.class)
                 .setParameter(param, refreshTokenValue)
