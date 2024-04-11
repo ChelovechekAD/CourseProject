@@ -16,6 +16,6 @@ public class LogoutCommand implements Command {
         Cookie cookie = new Cookie(Constants.REFRESH_TOKEN_ATTR_NAME, "");
         cookie.setMaxAge(0);
         response.addCookie(cookie);
-        ResponseHelper.sendResponseWithStatus(response, HttpServletResponse.SC_OK, Constants.LOGOUT_MESSAGE);
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 }

@@ -7,6 +7,7 @@ import it.academy.DAO.impl.ProductDAOImpl;
 import it.academy.DAO.impl.ReviewDAOImpl;
 import it.academy.DAO.impl.UserDAOImpl;
 import it.academy.DTO.request.CreateReviewDTO;
+import it.academy.DTO.request.RequestDataDetailsDTO;
 import it.academy.DTO.response.ReviewDTO;
 import it.academy.DTO.response.ReviewsDTO;
 import it.academy.exceptions.*;
@@ -29,11 +30,17 @@ import java.util.function.Supplier;
 
 public class ReviewServiceImpl implements ReviewService {
 
-    private final TransactionHelper transactionHelper = TransactionHelper.getTransactionHelper();
-    private final ReviewDAO reviewDAO = new ReviewDAOImpl();
-    private final ProductDAO productDAO = new ProductDAOImpl();
-    private final UserDAO userDAO = new UserDAOImpl();
+    private final TransactionHelper transactionHelper;
+    private final ReviewDAO reviewDAO;
+    private final ProductDAO productDAO;
+    private final UserDAO userDAO;
 
+    public ReviewServiceImpl(){
+        transactionHelper = new TransactionHelper();
+        reviewDAO = new ReviewDAOImpl(transactionHelper);
+        productDAO = new ProductDAOImpl(transactionHelper);
+        userDAO = new UserDAOImpl(transactionHelper);
+    }
 
     @Override
     public void createReview(CreateReviewDTO createReviewDTO) {
@@ -90,9 +97,10 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public ReviewsDTO getAllReviewsPage(@NonNull Integer countPerPage, @NonNull Integer pageNum){
+    public ReviewsDTO getAllReviewsPage(@NonNull RequestDataDetailsDTO requestDataDetailsDTO){
         Supplier<ReviewsDTO> supplier = () -> {
-            List<Review> list = transactionHelper.transaction(() -> reviewDAO.getPage(countPerPage, pageNum));
+            List<Review> list = transactionHelper.transaction(() -> reviewDAO.getPage(requestDataDetailsDTO.getCountPerPage(),
+                    requestDataDetailsDTO.getPageNum()));
             Integer count = Math.toIntExact(transactionHelper.transaction(reviewDAO::getCountOf));
             return Converter.convertListReviewEntityToDTO(list, count);
         };

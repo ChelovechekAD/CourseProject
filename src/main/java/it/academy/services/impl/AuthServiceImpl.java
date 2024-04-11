@@ -9,6 +9,7 @@ import it.academy.DAO.impl.RoleDAOImpl;
 import it.academy.DAO.impl.UserDAOImpl;
 import it.academy.DTO.request.LoginUserDTO;
 import it.academy.DTO.request.RegUserDTO;
+import it.academy.DTO.request.RequestDataDetailsDTO;
 import it.academy.DTO.request.UpdateUserDTO;
 import it.academy.DTO.response.LoginUserJwtDTO;
 import it.academy.DTO.response.UserDTO;
@@ -31,11 +32,19 @@ import java.util.stream.Collectors;
 
 public class AuthServiceImpl implements AuthService {
 
-    private final TransactionHelper transactionHelper = TransactionHelper.getTransactionHelper();
-    private final UserDAO userDAO = new UserDAOImpl();
-    private final RoleDAO roleDAO = new RoleDAOImpl();
-    private final RefreshTokenDAO refreshTokenDAO = new RefreshTokenDAOImpl();
-    private final JwtProvider jwtProvider = new JwtProvider();
+    private final TransactionHelper transactionHelper;
+    private final UserDAO userDAO;
+    private final RoleDAO roleDAO;
+    private final RefreshTokenDAO refreshTokenDAO;
+    private final JwtProvider jwtProvider;
+
+    public AuthServiceImpl(){
+        transactionHelper = new TransactionHelper();
+        userDAO = new UserDAOImpl(transactionHelper);
+        roleDAO = new RoleDAOImpl(transactionHelper);
+        refreshTokenDAO = new RefreshTokenDAOImpl(transactionHelper);
+        jwtProvider = new JwtProvider();
+    }
 
     public void regUser(@NonNull RegUserDTO regUserDTO){
         System.out.println(regUserDTO);
@@ -77,49 +86,6 @@ public class AuthServiceImpl implements AuthService {
         return transactionHelper.transaction(updateTokens(refreshToken));
     }
 
-    public void deleteUser(@NonNull Long id){
-        transactionHelper.transaction(()->userDAO.delete(id));
-
-    }
-
-    public void updateUser(@NonNull UpdateUserDTO dto){
-        Runnable supplier = () -> {
-            User user = userDAO.get(dto.getId());
-            if (user == null) {
-                throw new UserNotFoundException();
-            }
-            Converter.updateUserByDTO(user, dto);
-        };
-        transactionHelper.transaction(supplier);
-    }
-
-    public void appendRole(@NonNull String roleName, @NonNull Long userId){
-        RoleEnum roleEnum = RoleEnum.valueOf(roleName);
-        //TODO Write this method.
-    }
-
-    public UserDTO getUserById(@NonNull Long id){
-        Supplier<UserDTO> supplier = () -> {
-            User user = userDAO.get(id);
-            if (user == null) {
-                throw new UserNotFoundException();
-            }
-            return Converter.convertUserEntityToDTO(user);
-        };
-        return transactionHelper.transaction(supplier);
-    }
-
-    public UsersDTO getUsersPage(@NonNull Integer countPerPage, @NonNull Integer pageNum){
-        Supplier<UsersDTO> supplier = () -> {
-            List<User> users = userDAO.getPage(countPerPage, pageNum);
-            Long count = userDAO.getCountOf();
-            List<UserDTO> userDTOList = users.stream()
-                    .map(Converter::convertUserEntityToDTO)
-                    .collect(Collectors.toList());
-            return new UsersDTO(userDTOList, count);
-        };
-        return transactionHelper.transaction(supplier);
-    }
 
     private Runnable saveToken(@NonNull String refreshToken){
         return () -> {

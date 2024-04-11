@@ -2,12 +2,10 @@ package it.academy.DAO.impl;
 
 import it.academy.DAO.OrderDAO;
 import it.academy.exceptions.OrderNotFoundException;
-import it.academy.models.Order;
-import it.academy.models.OrderItem;
-import it.academy.models.OrderItem_;
-import it.academy.models.Order_;
+import it.academy.models.*;
 import it.academy.models.embedded.OrderItemPK;
 import it.academy.models.embedded.OrderItemPK_;
+import it.academy.utilities.TransactionHelper;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaDelete;
 import jakarta.persistence.criteria.Join;
@@ -17,6 +15,9 @@ public class OrderDAOImpl extends DAOImpl<Order, Long> implements OrderDAO {
 
     public OrderDAOImpl() {
         super(Order.class);
+    }
+    public OrderDAOImpl(TransactionHelper transactionHelper){
+        super(Order.class, transactionHelper);
     }
 
     @Override

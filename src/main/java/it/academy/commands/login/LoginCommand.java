@@ -1,5 +1,6 @@
 package it.academy.commands.login;
 
+import it.academy.DTO.request.LoginUserDTO;
 import it.academy.DTO.response.LoginUserJwtDTO;
 import it.academy.commands.Command;
 import it.academy.exceptions.UserNotFoundException;
@@ -7,7 +8,6 @@ import it.academy.exceptions.WrongPasswordException;
 import it.academy.services.AuthService;
 import it.academy.services.impl.AuthServiceImpl;
 import it.academy.utilities.Constants;
-import it.academy.utilities.ConverterJson;
 import it.academy.utilities.ResponseHelper;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,8 +24,8 @@ public class LoginCommand implements Command {
         try {
             AuthService authService = new AuthServiceImpl();
             String req = request.getReader().lines().collect(Collectors.joining());
-            System.out.println(req);
-            LoginUserJwtDTO dto = authService.loginUser(ConverterJson.convertJsonLoginToDTO(req));
+            LoginUserDTO loginUserDTO = GSON.fromJson(req, LoginUserDTO.class);
+            LoginUserJwtDTO dto = authService.loginUser(loginUserDTO);
             String resp = GSON.toJson(dto);
             Cookie token = new Cookie(Constants.REFRESH_TOKEN_ATTR_NAME, dto.getRefreshToken());
             token.setMaxAge(Constants.JWT_REFRESH_EXPIRATION*60);

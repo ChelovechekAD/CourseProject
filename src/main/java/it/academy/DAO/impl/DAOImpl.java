@@ -10,11 +10,17 @@ import java.util.List;
 
 public class DAOImpl<T extends Serializable, R> implements DAO<T, R> {
 
-    protected TransactionHelper transactionHelper = TransactionHelper.getTransactionHelper();
+    protected TransactionHelper transactionHelper;
     private final Class<T> tClass;
 
     public DAOImpl(Class<T> tClass){
+        transactionHelper = new TransactionHelper();
         this.tClass = tClass;
+    }
+
+    public DAOImpl(Class<T> tClass, TransactionHelper transactionHelper){
+        this.tClass = tClass;
+        this.transactionHelper = transactionHelper;
     }
 
     @Override

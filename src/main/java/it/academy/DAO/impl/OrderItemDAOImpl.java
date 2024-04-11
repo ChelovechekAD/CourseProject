@@ -7,6 +7,7 @@ import it.academy.models.OrderItem_;
 import it.academy.models.Order_;
 import it.academy.models.embedded.OrderItemPK;
 import it.academy.models.embedded.OrderItemPK_;
+import it.academy.utilities.TransactionHelper;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Join;
@@ -18,6 +19,9 @@ public class OrderItemDAOImpl extends DAOImpl<OrderItem, OrderItemPK> implements
 
     public OrderItemDAOImpl(){
         super(OrderItem.class);
+    }
+    public OrderItemDAOImpl(TransactionHelper transactionHelper){
+        super(OrderItem.class, transactionHelper);
     }
 
     @Override

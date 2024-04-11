@@ -5,6 +5,8 @@ import it.academy.DAO.ProductDAO;
 import it.academy.DAO.impl.CategoryDAOImpl;
 import it.academy.DAO.impl.ProductDAOImpl;
 import it.academy.DTO.request.CreateProductDTO;
+import it.academy.DTO.request.GetProductPageByCategoryDTO;
+import it.academy.DTO.request.RequestDataDetailsDTO;
 import it.academy.DTO.response.ProductDTO;
 import it.academy.DTO.response.ProductsDTO;
 import it.academy.exceptions.CatalogNotFoundException;
@@ -32,9 +34,10 @@ public class ProductServiceImpl implements ProductService {
     private final TransactionHelper transactionHelper;
 
     public ProductServiceImpl(){
-        productDAO = new ProductDAOImpl();
-        categoryDAO = new CategoryDAOImpl();
-        transactionHelper = TransactionHelper.getTransactionHelper();
+        transactionHelper = new TransactionHelper();
+        productDAO = new ProductDAOImpl(transactionHelper);
+        categoryDAO = new CategoryDAOImpl(transactionHelper);
+
     }
 
     public void addProduct(@NonNull CreateProductDTO createProductDTO) {
@@ -82,27 +85,38 @@ public class ProductServiceImpl implements ProductService {
         return Converter.convertProdEntityToDTO(product);
     }
 
-    public ProductsDTO getAllExistProducts(@NonNull Integer pageNum, @NonNull Integer countPerPage){
+    public ProductsDTO getAllExistProducts(@NonNull RequestDataDetailsDTO requestDataDetailsDTO){
         Supplier<ProductsDTO> supplier = () -> {
             Long count = productDAO.getCountOf();
-            List<Product> products = productDAO.getPage(countPerPage, pageNum);
+            List<Product> products = productDAO.getPage(requestDataDetailsDTO.getCountPerPage(),
+                    requestDataDetailsDTO.getPageNum());
             return Converter.convertProdListToDTO(products, count);
         };
         return transactionHelper.transaction(supplier);
     }
 
-    public ProductsDTO getAllExistProductByCategoryName(@NonNull Long categoryId,
-                                                        @NonNull Integer pageNum, @NonNull Integer countPerPage){
+    public ProductsDTO getAllExistProductByCategoryName(@NonNull GetProductPageByCategoryDTO dto){
         Supplier<ProductsDTO> supplier = () -> {
+            CriteriaBuilder cb = transactionHelper.criteriaBuilder();
+            CriteriaQuery<Product> cq = cb.createQuery(Product.class);
+            Root<Product> root = cq.from(Product.class);
+            Join<Product, Category> categoryJoin = root.join(Product_.CATEGORY_ID);
+            cq.select(root)
+                    .where(cb.equal(categoryJoin.get(Category_.ID), dto.getCategoryId()));
             List<Product> products = transactionHelper.entityManager()
-                    .createQuery("select p from Product p where categoryId.id=:category", Product.class)
-                    .setParameter("category", categoryId)
-                    .setFirstResult(countPerPage * (pageNum - 1))
-                    .setMaxResults(countPerPage)
+                    .createQuery(cq)
+                    .setFirstResult(dto.getCountPerPage() * (dto.getPageNum() - 1))
+                    .setMaxResults(dto.getCountPerPage())
                     .getResultList();
+
+            CriteriaQuery<Long> cq1 = cb.createQuery(Long.class);
+            Root<Product> root1 = cq1.from(Product.class);
+            Join<Product, Category> categoryJoin1 = root1.join(Product_.CATEGORY_ID);
+            cq1.select(cb.count(root1))
+                    .where(cb.equal(categoryJoin1.get(Category_.ID), dto.getCategoryId()));
+
             Long count = transactionHelper.entityManager()
-                    .createQuery("select count(p) from Product p where categoryId.id=:category", Long.class)
-                    .setParameter("category", categoryId)
+                    .createQuery(cq1)
                     .getSingleResult();
             return Converter.convertProdListToDTO(products, count);
         };

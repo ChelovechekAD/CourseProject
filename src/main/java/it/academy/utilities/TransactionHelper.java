@@ -13,25 +13,12 @@ import static it.academy.utilities.Constants.NULL_EXCEPTION_MESSAGE;
 
 public final class TransactionHelper {
 
-    private static TransactionHelper transactionHelper;
     private EntityManager entityManager;
     private CriteriaBuilder criteriaBuilder;
     private Metamodel metamodel;
 
-    private TransactionHelper() {
+    public TransactionHelper() {
         this.entityManager = HibernateUtil.getEntityManager();
-    }
-
-    /**
-     * Return <code>TransactionHelper</code> instance, if instance is null - creates new instance.
-     *
-     * @return <code>TransactionHelper</code> instance
-     */
-    public static TransactionHelper getTransactionHelper() {
-        if (transactionHelper == null) {
-            transactionHelper = new TransactionHelper();
-        }
-        return transactionHelper;
     }
 
     /**

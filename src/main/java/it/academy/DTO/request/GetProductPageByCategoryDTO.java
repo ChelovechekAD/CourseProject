@@ -9,8 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AddToCartDTO {
-    private Integer quantity;
-    private Long productId;
-    private Long userId;
+public class GetProductPageByCategoryDTO {
+
+    private Integer pageNum;
+    private Integer countPerPage;
+    private Long categoryId;
+
 }

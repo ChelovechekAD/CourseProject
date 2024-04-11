@@ -7,6 +7,7 @@ import it.academy.DAO.impl.CartItemDAOImpl;
 import it.academy.DAO.impl.ProductDAOImpl;
 import it.academy.DAO.impl.UserDAOImpl;
 import it.academy.DTO.request.AddToCartDTO;
+import it.academy.DTO.request.DeleteItemFromCartDTO;
 import it.academy.DTO.request.UpdatedItemCartDTO;
 import it.academy.DTO.response.CartItemDTO;
 import it.academy.DTO.response.CartItemsDTO;
@@ -26,10 +27,17 @@ import java.util.stream.Collectors;
 
 public class CartServiceImpl implements CartService {
 
-    private final TransactionHelper transactionHelper = TransactionHelper.getTransactionHelper();
-    private final CartItemDAO cartItemDAO = new CartItemDAOImpl();
-    private final ProductDAO productDAO = new ProductDAOImpl();
-    private final UserDAO userDAO = new UserDAOImpl();
+    private final TransactionHelper transactionHelper;
+    private final CartItemDAO cartItemDAO;
+    private final ProductDAO productDAO;
+    private final UserDAO userDAO;
+
+    public CartServiceImpl(){
+        transactionHelper = new TransactionHelper();
+        cartItemDAO = new CartItemDAOImpl(transactionHelper);
+        productDAO = new ProductDAOImpl(transactionHelper);
+        userDAO = new UserDAOImpl(transactionHelper);
+    }
 
     public void addItemToCart(@NonNull AddToCartDTO dto){
         Runnable supplier = () -> {
@@ -51,16 +59,16 @@ public class CartServiceImpl implements CartService {
         transactionHelper.transaction(supplier);
     }
 
-    public void deleteItemFromCart(@NonNull Long prodId, @NonNull Long userId){
+    public void deleteItemFromCart(@NonNull DeleteItemFromCartDTO dto){
         try{
             Runnable runnable = () -> {
-                Product product = productDAO.get(prodId);
-                User user = userDAO.get(userId);
+                Product product = productDAO.get(dto.getProductId());
+                User user = userDAO.get(dto.getUserId());
                 validateCartItemPK(user, product);
                 CartItemPK cartItemPK = new CartItemPK(user, product);
                 cartItemDAO.delete(cartItemPK);
             };
-            transactionHelper.transaction(() -> runnable);
+            transactionHelper.transaction(runnable);
         }catch (NotFoundException e){
             throw new CartItemNotFoundException();
         }
@@ -89,10 +97,7 @@ public class CartServiceImpl implements CartService {
                 throw new UserNotFoundException();
             }
             List<CartItem> cartItems = cartItemDAO.getAllByUserId(userId);
-            List<CartItemDTO> list = cartItems.stream()
-                    .map(Converter::convertListCartItemEntityToListDTO)
-                    .collect(Collectors.toList());
-            return new CartItemsDTO(list);
+            return Converter.convertCartItemEntitiesToDTO(cartItems);
         };
         return transactionHelper.transaction(supplier);
     }

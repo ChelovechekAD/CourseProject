@@ -6,12 +6,16 @@ import it.academy.models.Order;
 import it.academy.models.*;
 import it.academy.models.embedded.OrderItemPK_;
 import it.academy.utilities.Constants;
+import it.academy.utilities.TransactionHelper;
 import jakarta.persistence.criteria.*;
 
 public class UserDAOImpl extends DAOImpl<User, Long> implements UserDAO {
 
     public UserDAOImpl() {
         super(User.class);
+    }
+    public UserDAOImpl(TransactionHelper transactionHelper) {
+        super(User.class, transactionHelper);
     }
 
     @Override

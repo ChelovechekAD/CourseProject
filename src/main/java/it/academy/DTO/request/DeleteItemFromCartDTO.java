@@ -1,4 +1,4 @@
-package it.academy.DTO.response;
+package it.academy.DTO.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,11 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CartItemDTO {
-    private Integer count;
+public class DeleteItemFromCartDTO {
+
     private Long productId;
-    private String name;
-    private String imageLink;
-    private Double price;
-    private Double rating;
+    private Long userId;
+
 }

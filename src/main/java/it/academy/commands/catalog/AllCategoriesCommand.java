@@ -1,4 +1,4 @@
-package it.academy.commands.login;
+package it.academy.commands.catalog;
 
 import it.academy.DTO.response.CategoriesDTO;
 import it.academy.commands.Command;
@@ -18,7 +18,6 @@ public class AllCategoriesCommand implements Command {
         CategoryService categoryService = new CategoryServiceImpl();
         CategoriesDTO categoriesDTO = categoryService.getAllCategories();
         String resp = GSON.toJson(categoriesDTO);
-        System.out.println(resp);
         ResponseHelper.sendJsonResponse(response, resp);
     }
 }

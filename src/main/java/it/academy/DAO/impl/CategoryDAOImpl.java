@@ -5,6 +5,7 @@ import it.academy.models.*;
 import it.academy.models.embedded.CartItemPK;
 import it.academy.models.embedded.CartItemPK_;
 import it.academy.utilities.Constants;
+import it.academy.utilities.TransactionHelper;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -17,6 +18,9 @@ public class CategoryDAOImpl extends DAOImpl<Category, Long> implements Category
 
     public CategoryDAOImpl(){
         super(Category.class);
+    }
+    public CategoryDAOImpl(TransactionHelper transactionHelper){
+        super(Category.class, transactionHelper);
     }
 
     @Override

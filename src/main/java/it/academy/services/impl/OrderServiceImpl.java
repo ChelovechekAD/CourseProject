@@ -32,11 +32,19 @@ import java.util.stream.Collectors;
 
 public class OrderServiceImpl implements OrderService {
 
-    private final TransactionHelper transactionHelper = TransactionHelper.getTransactionHelper();
-    private final OrderDAO orderDAO = new OrderDAOImpl();
-    private final OrderItemDAO orderItemDAO = new OrderItemDAOImpl();
-    private final UserDAO userDAO = new UserDAOImpl();
-    private final ProductDAO productDAO = new ProductDAOImpl();
+    private final TransactionHelper transactionHelper;
+    private final OrderDAO orderDAO;
+    private final OrderItemDAO orderItemDAO;
+    private final UserDAO userDAO;
+    private final ProductDAO productDAO;
+
+    public OrderServiceImpl(){
+        transactionHelper = new TransactionHelper();
+        orderDAO = new OrderDAOImpl(transactionHelper);
+        orderItemDAO = new OrderItemDAOImpl(transactionHelper);
+        userDAO = new UserDAOImpl(transactionHelper);
+        productDAO = new ProductDAOImpl(transactionHelper);
+    }
 
     public void createOrder(@NonNull CreateOrderDTO createOrderDTO) {
         Runnable orderSupplier = () -> {
@@ -112,9 +120,9 @@ public class OrderServiceImpl implements OrderService {
         return transactionHelper.transaction(supplier);
     }
 
-    public void deleteOrderItem(@NonNull Long productId, @NonNull Long order_id){
+    public void deleteOrderItem(@NonNull Long productId, @NonNull Long orderId){
         Runnable supplier = () -> {
-            Order order = orderDAO.get(order_id);
+            Order order = orderDAO.get(orderId);
             Product product = productDAO.get(productId);
             validateOnExist(order, product);
             try{

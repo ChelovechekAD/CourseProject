@@ -2,14 +2,19 @@ package it.academy.DAO.impl;
 
 import it.academy.DAO.RefreshTokenDAO;
 import it.academy.exceptions.TokenNotFound;
+import it.academy.models.Product;
 import it.academy.models.RefreshToken;
 import it.academy.utilities.Constants;
+import it.academy.utilities.TransactionHelper;
 
 public class RefreshTokenDAOImpl extends DAOImpl<RefreshToken, Long> implements RefreshTokenDAO {
 
     public RefreshTokenDAOImpl() {
         super(RefreshToken.class);
+    } public RefreshTokenDAOImpl(TransactionHelper transactionHelper){
+        super(RefreshToken.class, transactionHelper);
     }
+
 
     @Override
     public RefreshToken getTokenByEmail(String email) {

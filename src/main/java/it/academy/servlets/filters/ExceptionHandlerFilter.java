@@ -1,5 +1,6 @@
 package it.academy.servlets.filters;
 
+import it.academy.exceptions.RequestParamInvalidException;
 import it.academy.utilities.Constants;
 import it.academy.utilities.ResponseHelper;
 import jakarta.servlet.FilterChain;
@@ -23,7 +24,10 @@ public class ExceptionHandlerFilter extends HttpFilter {
 
         try {
             chain.doFilter(req, res);
-        }catch (Exception e){
+        } catch (RequestParamInvalidException e){
+          e.printStackTrace();
+          ResponseHelper.sendResponseWithStatus(httpResponse, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+        } catch (Exception e){
             e.printStackTrace();
             ResponseHelper.sendResponseWithStatus(httpResponse,
                     HttpServletResponse.SC_INTERNAL_SERVER_ERROR,

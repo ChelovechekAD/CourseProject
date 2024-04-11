@@ -1,10 +1,12 @@
-package it.academy.commands.login;
+package it.academy.commands.catalog;
 
+import it.academy.DTO.request.GetProductPageByCategoryDTO;
 import it.academy.DTO.response.ProductsDTO;
 import it.academy.commands.Command;
 import it.academy.services.ProductService;
 import it.academy.services.impl.ProductServiceImpl;
 import it.academy.utilities.Constants;
+import it.academy.utilities.Extractor;
 import it.academy.utilities.ResponseHelper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,11 +21,8 @@ public class FilteredProductsPageCommand implements Command {
     public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ProductService productService = new ProductServiceImpl();
         ProductsDTO productsDTO = productService
-                .getAllExistProductByCategoryName(Long.parseLong(request.getParameter(Constants.CATEGORY_ID_PARAM_KEY)),
-                        Integer.parseInt(request.getParameter(Constants.PAGE_NUM_PARAM_KEY)),
-                        Integer.parseInt(request.getParameter(Constants.COUNT_PER_PAGE_PARAM_KEY)));
+                .getAllExistProductByCategoryName(Extractor.extractDTOFromRequest(request, new GetProductPageByCategoryDTO()));
         String resp = GSON.toJson(productsDTO);
-        System.out.println(resp);
         ResponseHelper.sendJsonResponse(response, resp);
     }
 }

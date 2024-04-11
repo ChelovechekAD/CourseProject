@@ -6,6 +6,7 @@ import it.academy.models.*;
 import it.academy.models.embedded.CartItemPK;
 import it.academy.models.embedded.CartItemPK_;
 import it.academy.utilities.Constants;
+import it.academy.utilities.TransactionHelper;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Join;
@@ -17,6 +18,9 @@ public class CartItemDAOImpl extends DAOImpl<CartItem, CartItemPK> implements Ca
 
     public CartItemDAOImpl(){
         super(CartItem.class);
+    }
+    public CartItemDAOImpl(TransactionHelper transactionHelper){
+        super(CartItem.class, transactionHelper);
     }
 
     @Override
@@ -33,11 +37,5 @@ public class CartItemDAOImpl extends DAOImpl<CartItem, CartItemPK> implements Ca
 
         return transactionHelper.entityManager().createQuery(cq).getResultList();
 
-        /*String paramName = Constants.SELECT_FROM_CART_ITEM_WHERE_USER_ID
-                .substring(Constants.SELECT_FROM_CART_ITEM_WHERE_USER_ID.lastIndexOf(":")+1);
-        return transactionHelper.entityManager()
-                .createQuery(Constants.SELECT_FROM_CART_ITEM_WHERE_USER_ID, CartItem.class)
-                .setParameter(paramName, userId)
-                .getResultList();*/
     }
 }

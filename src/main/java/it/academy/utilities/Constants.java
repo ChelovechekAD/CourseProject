@@ -74,4 +74,8 @@ public class Constants {
     public static final String SELECT_FROM_GENERIC = "select o from %s o";
     public static final String SELECT_COUNT_FROM_GENERIC = "select count(i) from %s i";
     public static final String SELECT_FROM_CATEGORY = "select c from Category c";
+    public static final String REQUIRED_REQUEST_PARAMETERS_DOESNT_EXIST_OR_INVALID = "Required request parameters doesn't exist or invalid!";
+    public static final String UNSUPPORTED_FIELD_TYPE = "Unsupported field type: ";
+    public static final String USER_ID_PARAM_KEY = "userId";
+    public static final String SELECT_FROM_PRODUCT = "select p from Product p";
 }

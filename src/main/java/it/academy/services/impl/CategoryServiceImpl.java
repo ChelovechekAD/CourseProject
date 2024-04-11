@@ -14,8 +14,13 @@ import java.util.List;
 
 public class CategoryServiceImpl implements CategoryService {
 
-    private final TransactionHelper transactionHelper = TransactionHelper.getTransactionHelper();
-    private final CategoryDAO categoryDAO = new CategoryDAOImpl();
+    private final TransactionHelper transactionHelper;
+    private final CategoryDAO categoryDAO;
+    public CategoryServiceImpl(){
+        transactionHelper = new TransactionHelper();
+        categoryDAO = new CategoryDAOImpl(transactionHelper);
+    }
+
     public void addCategory(@NonNull CategoryDTO categoryDTO){
         transactionHelper.transaction(()-> Converter.convertCategoryDTOToEntity(categoryDTO));
     }

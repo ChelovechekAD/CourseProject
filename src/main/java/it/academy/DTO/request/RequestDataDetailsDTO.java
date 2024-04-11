@@ -5,12 +5,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+import java.util.Map;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AddToCartDTO {
-    private Integer quantity;
-    private Long productId;
-    private Long userId;
+public class RequestDataDetailsDTO implements Serializable {
+
+    private Integer countPerPage;
+    private Integer pageNum;
+
 }

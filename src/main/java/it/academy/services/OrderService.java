@@ -13,7 +13,7 @@ public interface OrderService {
     void deleteOrder(@NonNull Long orderId);
     OrdersDTO getListOfOrders(@NonNull Integer countPerPage, @NonNull Integer pageNum);
     OrderItemsDTO getOrderItems(@NonNull Long orderId, @NonNull Integer pageNum, @NonNull Integer countPerPage);
-    void deleteOrderItem(@NonNull Long productId, @NonNull Long order_id);
+    void deleteOrderItem(@NonNull Long productId, @NonNull Long orderId);
     void updateOrderItem(@NonNull OrderItemDTO orderItemDTO);
     void addOrderItemToOrder(@NonNull OrderItemDTO orderItemDTO);
 

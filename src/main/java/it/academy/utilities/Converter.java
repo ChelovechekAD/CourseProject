@@ -2,7 +2,6 @@ package it.academy.utilities;
 
 import it.academy.DTO.request.*;
 import it.academy.DTO.response.*;
-import it.academy.enums.RoleEnum;
 import it.academy.models.*;
 import it.academy.models.embedded.Address;
 import lombok.experimental.UtilityClass;
@@ -150,14 +149,22 @@ public class Converter {
         return userDTO;
     }
 
-    public static CartItemDTO convertListCartItemEntityToListDTO(CartItem cartItemList){
+    public static CartItemDTO convertCartItemEntityToDTO(CartItem cartItem){
         return CartItemDTO.builder()
-                .count(cartItemList.getQuantity())
-                .productId(cartItemList.getCartItemPK().getProductId().getId())
-                .imageLink(cartItemList.getCartItemPK().getProductId().getImageLink())
-                .name(cartItemList.getCartItemPK().getProductId().getName())
-                .price(cartItemList.getCartItemPK().getProductId().getPrice())
+                .count(cartItem.getQuantity())
+                .productId(cartItem.getCartItemPK().getProductId().getId())
+                .imageLink(cartItem.getCartItemPK().getProductId().getImageLink())
+                .name(cartItem.getCartItemPK().getProductId().getName())
+                .price(cartItem.getCartItemPK().getProductId().getPrice())
+                .rating(cartItem.getCartItemPK().getProductId().getRating())
                 .build();
+    }
+
+    public static CartItemsDTO convertCartItemEntitiesToDTO(List<CartItem> cartItemList){
+        List<CartItemDTO> cartItemDTOList = cartItemList.stream()
+                .map(Converter::convertCartItemEntityToDTO)
+                .collect(Collectors.toList());
+        return new CartItemsDTO(cartItemDTOList);
     }
 
     public static ReviewDTO convertReviewEntityToDTO(Review entity){

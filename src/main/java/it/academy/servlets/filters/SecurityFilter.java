@@ -26,13 +26,19 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static it.academy.utilities.Constants.COMMAND_NOT_FOUND;
 import static it.academy.utilities.Constants.GSON;
 
 @WebFilter(filterName = "SecurityFilter", urlPatterns = "/api/*")
 public class SecurityFilter extends HttpFilter {
 
     private final List<CommandEnum> userAvailableRoutes = List.of(
-            CommandEnum.GET_ALL_CATEGORIES
+            CommandEnum.GET_ALL_CATEGORIES,
+            CommandEnum.GET_PRODUCTS_PAGE,
+            CommandEnum.GET_CATEGORY_PRODUCTS_PAGE,
+            CommandEnum.GET_GET_CART_ITEMS,
+            CommandEnum.POST_ADD_CART_ITEM,
+            CommandEnum.POST_DELETE_CART_ITEM
     );
 
     @Override
@@ -52,7 +58,13 @@ public class SecurityFilter extends HttpFilter {
         String method = request.getMethod();
         String route = String.format(Constants.COMMAND_PATTERN, method, command);
         System.out.println("Route: " + route);
-        CommandEnum commandEnum = CommandEnum.valueOf(route.toUpperCase());
+        CommandEnum commandEnum = null;
+        try {
+            commandEnum = CommandEnum.valueOf(route.toUpperCase());
+        } catch (IllegalArgumentException e){
+            ResponseHelper.sendResponseWithStatus(response, HttpServletResponse.SC_NOT_FOUND, COMMAND_NOT_FOUND);
+            return;
+        }
         if (userAvailableRoutes.contains(commandEnum)){
             String token = request.getHeader(Constants.AUTHORIZATION);
             if (token==null || !token.startsWith(Constants.TOKEN_PATTERN)){
@@ -69,9 +81,9 @@ public class SecurityFilter extends HttpFilter {
             @SuppressWarnings("unchecked")
             ArrayList<Object> roles = (ArrayList<Object>) claims.get(Constants.ROLES_KEY);
             List<RoleEnum> userRoles = roles.stream()
-                    .map(r-> GSON.fromJson(roles.get(0).toString(), Role.class).getRole())
+                    .map(r-> GSON.fromJson(r.toString(), Role.class).getRole())
                     .collect(Collectors.toList());
-
+            System.out.println(userRoles);
             if (!userRoles.contains(RoleEnum.DEFAULT_USER)){
                 ResponseHelper.sendResponseWithStatus(response, HttpServletResponse.SC_FORBIDDEN, Constants.ACCESS_DENIED);
                 return;
