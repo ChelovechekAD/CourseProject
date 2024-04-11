@@ -42,11 +42,7 @@ public class UserServiceImpl implements UserService {
         };
         transactionHelper.transaction(supplier);
     }
-
-    public void appendRole(@NonNull String roleName, @NonNull Long userId) {
-        RoleEnum roleEnum = RoleEnum.valueOf(roleName);
-        //TODO Write this method.
-    }
+    
 
     public UserDTO getUserById(@NonNull Long id) {
         Supplier<UserDTO> supplier = () -> {

@@ -7,7 +7,6 @@ import it.academy.DTO.response.UsersDTO;
 import lombok.NonNull;
 
 public interface UserService {
-    void appendRole(@NonNull String roleName, @NonNull Long userId);
 
     void deleteUser(@NonNull Long id);
 
