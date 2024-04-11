@@ -22,17 +22,17 @@ public class UserServiceImpl implements UserService {
     private final TransactionHelper transactionHelper;
     private final UserDAO userDAO;
 
-    public UserServiceImpl(){
+    public UserServiceImpl() {
         transactionHelper = new TransactionHelper();
         userDAO = new UserDAOImpl(transactionHelper);
     }
 
-    public void deleteUser(@NonNull Long id){
-        transactionHelper.transaction(()->userDAO.delete(id));
+    public void deleteUser(@NonNull Long id) {
+        transactionHelper.transaction(() -> userDAO.delete(id));
 
     }
 
-    public void updateUser(@NonNull UpdateUserDTO dto){
+    public void updateUser(@NonNull UpdateUserDTO dto) {
         Runnable supplier = () -> {
             User user = userDAO.get(dto.getId());
             if (user == null) {
@@ -43,12 +43,12 @@ public class UserServiceImpl implements UserService {
         transactionHelper.transaction(supplier);
     }
 
-    public void appendRole(@NonNull String roleName, @NonNull Long userId){
+    public void appendRole(@NonNull String roleName, @NonNull Long userId) {
         RoleEnum roleEnum = RoleEnum.valueOf(roleName);
         //TODO Write this method.
     }
 
-    public UserDTO getUserById(@NonNull Long id){
+    public UserDTO getUserById(@NonNull Long id) {
         Supplier<UserDTO> supplier = () -> {
             User user = userDAO.get(id);
             if (user == null) {
@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
         return transactionHelper.transaction(supplier);
     }
 
-    public UsersDTO getUsersPage(@NonNull RequestDataDetailsDTO requestDataDetailsDTO){
+    public UsersDTO getUsersPage(@NonNull RequestDataDetailsDTO requestDataDetailsDTO) {
         Supplier<UsersDTO> supplier = () -> {
             List<User> users = userDAO.getPage(requestDataDetailsDTO.getCountPerPage(),
                     requestDataDetailsDTO.getPageNum());

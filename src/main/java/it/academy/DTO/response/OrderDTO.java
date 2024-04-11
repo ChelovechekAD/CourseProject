@@ -18,6 +18,5 @@ public class OrderDTO {
     private Date date;
     private OrderStatus orderStatus;
     private Long countOfItems;
-    private OrderUserDTO orderUserDTO;
 
 }

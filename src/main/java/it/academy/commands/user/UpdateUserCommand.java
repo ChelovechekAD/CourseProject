@@ -1,7 +1,5 @@
 package it.academy.commands.user;
 
-import it.academy.DAO.UserDAO;
-import it.academy.DAO.impl.UserDAOImpl;
 import it.academy.DTO.request.UpdateUserDTO;
 import it.academy.commands.Command;
 import it.academy.exceptions.UserNotFoundException;
@@ -27,7 +25,7 @@ public class UpdateUserCommand implements Command {
             UserService userService = new UserServiceImpl();
             userService.updateUser(updateUserDTO);
             response.setStatus(HttpServletResponse.SC_OK);
-        }catch (UserNotFoundException e){
+        } catch (UserNotFoundException e) {
             ResponseHelper.sendResponseWithStatus(response, HttpServletResponse.SC_NOT_FOUND, Constants.USER_NOT_FOUND);
         }
     }

@@ -25,7 +25,7 @@ public class RegistrationCommand implements Command {
             RegUserDTO userDTO = GSON.fromJson(req, RegUserDTO.class);
             authService.regUser(userDTO);
             response.setStatus(HttpServletResponse.SC_CREATED);
-        } catch (PasswordMatchException | UserExistException e){
+        } catch (PasswordMatchException | UserExistException e) {
             e.printStackTrace();
             ResponseHelper.sendResponseWithStatus(response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
         }

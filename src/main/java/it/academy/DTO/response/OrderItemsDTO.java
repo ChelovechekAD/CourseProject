@@ -1,6 +1,5 @@
 package it.academy.DTO.response;
 
-import it.academy.models.OrderItem;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

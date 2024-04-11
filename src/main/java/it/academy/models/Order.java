@@ -10,16 +10,13 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.io.Serializable;
 import java.sql.Date;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Entity
-@Table (name = "orders")
+@Table(name = "orders")
 public class Order implements Serializable {
 
     @Id
@@ -28,12 +25,12 @@ public class Order implements Serializable {
     @ManyToOne
     @JoinColumn(nullable = false, name = "user_id")
     private User userId;
-    @Column (updatable = false, name = "created_at")
+    @Column(updatable = false, name = "created_at")
     @CreationTimestamp
     private Date createdAt;
     @Column(name = "order_status", nullable = false)
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private OrderStatus orderStatus = OrderStatus.PROCESSING;
-    
+
 }

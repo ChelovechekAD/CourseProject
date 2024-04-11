@@ -24,10 +24,10 @@ public class ExceptionHandlerFilter extends HttpFilter {
 
         try {
             chain.doFilter(req, res);
-        } catch (RequestParamInvalidException e){
-          e.printStackTrace();
-          ResponseHelper.sendResponseWithStatus(httpResponse, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
-        } catch (Exception e){
+        } catch (RequestParamInvalidException e) {
+            e.printStackTrace();
+            ResponseHelper.sendResponseWithStatus(httpResponse, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
             e.printStackTrace();
             ResponseHelper.sendResponseWithStatus(httpResponse,
                     HttpServletResponse.SC_INTERNAL_SERVER_ERROR,

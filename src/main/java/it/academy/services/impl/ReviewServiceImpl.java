@@ -35,7 +35,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final ProductDAO productDAO;
     private final UserDAO userDAO;
 
-    public ReviewServiceImpl(){
+    public ReviewServiceImpl() {
         transactionHelper = new TransactionHelper();
         reviewDAO = new ReviewDAOImpl(transactionHelper);
         productDAO = new ProductDAOImpl(transactionHelper);
@@ -88,7 +88,7 @@ public class ReviewServiceImpl implements ReviewService {
             ReviewPK reviewPK = new ReviewPK(user, product);
             try {
                 reviewDAO.delete(reviewPK);
-            } catch (NotFoundException e){
+            } catch (NotFoundException e) {
                 throw new ReviewNotFoundException();
             }
             updateTotalRatingForProduct(product);
@@ -97,7 +97,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public ReviewsDTO getAllReviewsPage(@NonNull RequestDataDetailsDTO requestDataDetailsDTO){
+    public ReviewsDTO getAllReviewsPage(@NonNull RequestDataDetailsDTO requestDataDetailsDTO) {
         Supplier<ReviewsDTO> supplier = () -> {
             List<Review> list = transactionHelper.transaction(() -> reviewDAO.getPage(requestDataDetailsDTO.getCountPerPage(),
                     requestDataDetailsDTO.getPageNum()));

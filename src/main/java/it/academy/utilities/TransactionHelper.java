@@ -1,12 +1,14 @@
 package it.academy.utilities;
+
 import jakarta.persistence.*;
-import jakarta.persistence.criteria.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import jakarta.persistence.metamodel.Metamodel;
 import jakarta.transaction.TransactionalException;
 
 import java.util.Map;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static it.academy.utilities.Constants.NULL_EXCEPTION_MESSAGE;
@@ -242,6 +244,7 @@ public final class TransactionHelper {
         closeEntityManager();
         return obj;
     }
+
     /**
      * Start new transaction and execute method from args. If method executed successfully
      * then <code>commit</code> the transaction,
@@ -263,14 +266,15 @@ public final class TransactionHelper {
     }
 
 
-    public Predicate collectParamsToPredicate(Map<String, Object> hashMap, Root<?> root, Predicate predicate){
-        hashMap.forEach((k, v)->
+    public Predicate collectParamsToPredicate(Map<String, Object> hashMap, Root<?> root, Predicate predicate) {
+        hashMap.forEach((k, v) ->
                 predicate.getExpressions().add(criteriaBuilder.equal(root.get(k), v))
         );
         return predicate;
     }
-    public Predicate collectParamsToPredicate(Map<String, Object> hashMap, Join<?, ?> join, Predicate predicate){
-        hashMap.forEach((k, v)->
+
+    public Predicate collectParamsToPredicate(Map<String, Object> hashMap, Join<?, ?> join, Predicate predicate) {
+        hashMap.forEach((k, v) ->
                 predicate.getExpressions().add(criteriaBuilder.equal(join.get(k), v))
         );
         return predicate;

@@ -7,7 +7,6 @@ import it.academy.exceptions.ProductNotFoundException;
 import it.academy.exceptions.UserNotFoundException;
 import it.academy.services.CartService;
 import it.academy.services.impl.CartServiceImpl;
-import it.academy.utilities.Extractor;
 import it.academy.utilities.ResponseHelper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,12 +22,10 @@ public class DeleteCartItemCommand implements Command {
         try {
             CartService cartService = new CartServiceImpl();
             String req = request.getReader().lines().collect(Collectors.joining());
-            System.out.println(req);
             DeleteItemFromCartDTO dto = GSON.fromJson(req, DeleteItemFromCartDTO.class);
-            System.out.println(dto);
             cartService.deleteItemFromCart(dto);
             response.setStatus(HttpServletResponse.SC_OK);
-        }catch (ProductNotFoundException | UserNotFoundException | CartItemNotFoundException e){
+        } catch (ProductNotFoundException | UserNotFoundException | CartItemNotFoundException e) {
             ResponseHelper.sendResponseWithStatus(response, HttpServletResponse.SC_NOT_FOUND, e.getMessage());
         }
     }

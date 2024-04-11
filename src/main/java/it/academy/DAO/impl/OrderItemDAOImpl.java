@@ -17,10 +17,11 @@ import java.util.List;
 
 public class OrderItemDAOImpl extends DAOImpl<OrderItem, OrderItemPK> implements OrderItemDAO {
 
-    public OrderItemDAOImpl(){
+    public OrderItemDAOImpl() {
         super(OrderItem.class);
     }
-    public OrderItemDAOImpl(TransactionHelper transactionHelper){
+
+    public OrderItemDAOImpl(TransactionHelper transactionHelper) {
         super(OrderItem.class, transactionHelper);
     }
 
@@ -43,7 +44,7 @@ public class OrderItemDAOImpl extends DAOImpl<OrderItem, OrderItemPK> implements
     }
 
     @Override
-    public Long getCountOfByOrderId(Long orderId){
+    public Long getCountOfByOrderId(Long orderId) {
         CriteriaBuilder cb = transactionHelper.criteriaBuilder();
         CriteriaQuery<Long> cq = cb.createQuery(Long.class);
         Root<OrderItem> root = cq.from(OrderItem.class);

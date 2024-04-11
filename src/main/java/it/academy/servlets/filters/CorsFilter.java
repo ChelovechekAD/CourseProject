@@ -1,6 +1,5 @@
 package it.academy.servlets.filters;
 
-import it.academy.utilities.DevUtils;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;

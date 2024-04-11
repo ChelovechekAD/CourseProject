@@ -1,25 +1,24 @@
 package it.academy.DAO.impl;
 
 import it.academy.DAO.CartItemDAO;
-import it.academy.DAO.UserDAO;
-import it.academy.models.*;
+import it.academy.models.CartItem;
+import it.academy.models.CartItem_;
+import it.academy.models.User;
+import it.academy.models.User_;
 import it.academy.models.embedded.CartItemPK;
 import it.academy.models.embedded.CartItemPK_;
-import it.academy.utilities.Constants;
 import it.academy.utilities.TransactionHelper;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 
 import java.util.List;
 
 public class CartItemDAOImpl extends DAOImpl<CartItem, CartItemPK> implements CartItemDAO {
 
-    public CartItemDAOImpl(){
+    public CartItemDAOImpl() {
         super(CartItem.class);
     }
-    public CartItemDAOImpl(TransactionHelper transactionHelper){
+
+    public CartItemDAOImpl(TransactionHelper transactionHelper) {
         super(CartItem.class, transactionHelper);
     }
 
@@ -37,5 +36,15 @@ public class CartItemDAOImpl extends DAOImpl<CartItem, CartItemPK> implements Ca
 
         return transactionHelper.entityManager().createQuery(cq).getResultList();
 
+    }
+
+    @Override
+    public boolean deleteAllByUserId(Long userId) {
+        CriteriaBuilder cb = transactionHelper.criteriaBuilder();
+        CriteriaDelete<CartItem> cartDeleteQuery = cb.createCriteriaDelete(CartItem.class);
+        Root<CartItem> root1 = cartDeleteQuery.from(CartItem.class);
+        cartDeleteQuery.where(cb.equal(root1.get(CartItem_.CART_ITEM_PK).get(CartItemPK_.USER_ID).get(User_.ID), userId));
+        transactionHelper.entityManager().createQuery(cartDeleteQuery).executeUpdate();
+        return true;
     }
 }

@@ -28,10 +28,10 @@ public class LoginCommand implements Command {
             LoginUserJwtDTO dto = authService.loginUser(loginUserDTO);
             String resp = GSON.toJson(dto);
             Cookie token = new Cookie(Constants.REFRESH_TOKEN_ATTR_NAME, dto.getRefreshToken());
-            token.setMaxAge(Constants.JWT_REFRESH_EXPIRATION*60);
+            token.setMaxAge(Constants.JWT_REFRESH_EXPIRATION * 60);
             response.addCookie(token);
             ResponseHelper.sendJsonResponse(response, resp);
-        }catch (UserNotFoundException | WrongPasswordException e) {
+        } catch (UserNotFoundException | WrongPasswordException e) {
             ResponseHelper.sendResponseWithStatus(response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
         }
     }

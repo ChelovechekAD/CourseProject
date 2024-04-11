@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 @UtilityClass
 public class Converter {
 
-    public static Product convertCreateProdDTOToEntity(CreateProductDTO productDTO){
+    public static Product convertCreateProdDTOToEntity(CreateProductDTO productDTO) {
         return Product.builder()
                 .id(productDTO.getId())
                 .categoryId(null)
@@ -22,7 +22,8 @@ public class Converter {
                 .imageLink(productDTO.getImageLink())
                 .build();
     }
-    public static ProductDTO convertProdEntityToDTO(Product product){
+
+    public static ProductDTO convertProdEntityToDTO(Product product) {
         return ProductDTO.builder()
                 .id(product.getId())
                 .categoryId(product.getId())
@@ -34,10 +35,10 @@ public class Converter {
                 .build();
     }
 
-    public static OrderItem convertOrderItemDTOToEntity(OrderItemDTO orderItemDTO){
+    public static OrderItem convertOrderItemDTOToEntity(OrderItemDTO orderItemDTO) {
         return OrderItem.builder()
                 .orderItemPK(null)
-                .count(orderItemDTO.getCount())
+                .count(orderItemDTO.getQuantity())
                 .price(orderItemDTO.getPrice())
                 .build();
     }
@@ -52,47 +53,37 @@ public class Converter {
                 .build();
     }
 
-    public static OrderDTO convertOrderEntityToDTO(Order order, Long countOfItems){
-        User user = order.getUserId();
+    public static OrderDTO convertOrderEntityToDTO(Order order, Long countOfItems) {
         return OrderDTO.builder()
                 .id(order.getId())
                 .orderStatus(order.getOrderStatus())
                 .date(order.getCreatedAt())
                 .countOfItems(countOfItems)
-                .orderUserDTO(OrderUserDTO.builder()
-                        .id(user.getId())
-                        .street(user.getAddress().getStreet())
-                        .building(user.getAddress().getBuilding())
-                        .city(user.getAddress().getCity())
-                        .email(user.getEmail())
-                        .name(user.getName())
-                        .surname(user.getSurname())
-                        .phoneNumber(user.getPhoneNumber())
-                        .build())
                 .build();
     }
 
-    public static ProductsDTO convertProdListToDTO(List<Product> products, Long count){
+    public static ProductsDTO convertProdListToDTO(List<Product> products, Long count) {
         List<ProductDTO> productDTOList = products.stream()
                 .map(Converter::convertProdEntityToDTO)
                 .collect(Collectors.toList());
         return new ProductsDTO(productDTOList, count);
     }
 
-    public static CategoryDTO convertCategoryEntityToDTO(Category category){
+    public static CategoryDTO convertCategoryEntityToDTO(Category category) {
         return CategoryDTO.builder()
                 .id(category.getId())
                 .categoryName(category.getCategoryName())
                 .build();
     }
 
-    public static Category convertCategoryDTOToEntity(CategoryDTO categoryDTO){
+    public static Category convertCategoryDTOToEntity(CategoryDTO categoryDTO) {
         return Category.builder()
                 .id(categoryDTO.getId())
                 .categoryName(categoryDTO.getCategoryName())
                 .build();
     }
-    public static CategoriesDTO convertCategoriesListToDTO(List<Category> categories){
+
+    public static CategoriesDTO convertCategoriesListToDTO(List<Category> categories) {
         List<CategoryDTO> categoryDTOList = categories.stream()
                 .map(Converter::convertCategoryEntityToDTO)
                 .collect(Collectors.toList());
@@ -101,7 +92,7 @@ public class Converter {
                 .build();
     }
 
-    public static User convertRegUserDTOToEntity(RegUserDTO regUserDTO){
+    public static User convertRegUserDTOToEntity(RegUserDTO regUserDTO) {
         return User.builder()
                 .email(regUserDTO.getEmail())
                 .name(regUserDTO.getName())
@@ -116,7 +107,7 @@ public class Converter {
                 .build();
     }
 
-    public static void updateUserByDTO(User user, UpdateUserDTO dto){
+    public static void updateUserByDTO(User user, UpdateUserDTO dto) {
         Address address = Address.builder()
                 .building(dto.getBuilding())
                 .street(dto.getStreet())
@@ -127,7 +118,7 @@ public class Converter {
         user.setAddress(address);
     }
 
-    public static UserDTO convertUserEntityToDTO(User user){
+    public static UserDTO convertUserEntityToDTO(User user) {
         List<String> roles = user.getRoleSet().stream()
                 .map(r -> r.getRole().name())
                 .collect(Collectors.toList());
@@ -139,7 +130,7 @@ public class Converter {
                 .phoneNumber(user.getPhoneNumber())
                 .roles(roles)
                 .build();
-        if (user.getAddress() == null){
+        if (user.getAddress() == null) {
             return userDTO;
         }
 
@@ -149,9 +140,9 @@ public class Converter {
         return userDTO;
     }
 
-    public static CartItemDTO convertCartItemEntityToDTO(CartItem cartItem){
+    public static CartItemDTO convertCartItemEntityToDTO(CartItem cartItem) {
         return CartItemDTO.builder()
-                .count(cartItem.getQuantity())
+                .quantity(cartItem.getQuantity())
                 .productId(cartItem.getCartItemPK().getProductId().getId())
                 .imageLink(cartItem.getCartItemPK().getProductId().getImageLink())
                 .name(cartItem.getCartItemPK().getProductId().getName())
@@ -160,14 +151,14 @@ public class Converter {
                 .build();
     }
 
-    public static CartItemsDTO convertCartItemEntitiesToDTO(List<CartItem> cartItemList){
+    public static CartItemsDTO convertCartItemEntitiesToDTO(List<CartItem> cartItemList) {
         List<CartItemDTO> cartItemDTOList = cartItemList.stream()
                 .map(Converter::convertCartItemEntityToDTO)
                 .collect(Collectors.toList());
         return new CartItemsDTO(cartItemDTOList);
     }
 
-    public static ReviewDTO convertReviewEntityToDTO(Review entity){
+    public static ReviewDTO convertReviewEntityToDTO(Review entity) {
         return ReviewDTO.builder()
                 .userId(entity.getReviewPK().getUserId().getId())
                 .description(entity.getDescription())
@@ -176,7 +167,8 @@ public class Converter {
                 .rating(entity.getRating())
                 .build();
     }
-    public static ReviewsDTO convertListReviewEntityToDTO(List<Review> reviewList, Integer count){
+
+    public static ReviewsDTO convertListReviewEntityToDTO(List<Review> reviewList, Integer count) {
         List<ReviewDTO> list = reviewList.stream()
                 .map(Converter::convertReviewEntityToDTO)
                 .collect(Collectors.toList());

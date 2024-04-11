@@ -2,7 +2,6 @@ package it.academy.DAO.impl;
 
 import it.academy.DAO.RoleDAO;
 import it.academy.enums.RoleEnum;
-import it.academy.models.Review;
 import it.academy.models.Role;
 import it.academy.models.Role_;
 import it.academy.utilities.TransactionHelper;
@@ -14,6 +13,7 @@ public class RoleDAOImpl extends DAOImpl<Role, Short> implements RoleDAO {
     public RoleDAOImpl() {
         super(Role.class);
     }
+
     public RoleDAOImpl(TransactionHelper transactionHelper) {
         super(Role.class, transactionHelper);
     }

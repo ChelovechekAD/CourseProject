@@ -117,7 +117,7 @@
         <executions>
           <execution>
             <id>Mysql</id>
-            <phase>none</phase>
+            <phase>validate</phase>
             <goals>
               <goal>update</goal>
             </goals>

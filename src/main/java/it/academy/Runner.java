@@ -1,23 +1,17 @@
 package it.academy;
 
 import it.academy.DAO.CategoryDAO;
-import it.academy.DAO.ProductDAO;
 import it.academy.DAO.RoleDAO;
 import it.academy.DAO.impl.CategoryDAOImpl;
-import it.academy.DAO.impl.ProductDAOImpl;
 import it.academy.DAO.impl.RoleDAOImpl;
 import it.academy.enums.RoleEnum;
 import it.academy.models.Category;
-import it.academy.models.Product;
 import it.academy.models.Role;
-import it.academy.utilities.HibernateUtil;
 import it.academy.utilities.TransactionHelper;
-
-import java.util.stream.IntStream;
 
 public class Runner {
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
 
         TransactionHelper transactionHelper = new TransactionHelper();
 //        UserDAO userDAO = new UserDAOImpl();
@@ -35,9 +29,20 @@ public class Runner {
         cartItemDAO.getAllByUserId(1L).forEach(System.out::println);*/
         //userDAO.delete(1L);
 
+        CategoryDAO categoryDAO = new CategoryDAOImpl(transactionHelper);
+        transactionHelper.transaction(() -> categoryDAO.create(Category.builder().categoryName("Стулья").build()));
+        transactionHelper.transaction(() -> categoryDAO.create(Category.builder().categoryName("Столы").build()));
+        transactionHelper.transaction(() -> categoryDAO.create(Category.builder().categoryName("Шкафы").build()));
+        transactionHelper.transaction(() -> categoryDAO.create(Category.builder().categoryName("Диваны").build()));
+        transactionHelper.transaction(() -> categoryDAO.create(Category.builder().categoryName("Двери").build()));
+
+        
+        
         /*ProductDAO productDAO = new ProductDAOImpl(transactionHelper);
 
-        CategoryDAO categoryDAO = new CategoryDAOImpl(transactionHelper);
+       
+
+        
 
         IntStream.range(0, 120)
                 .forEach(i->{
@@ -52,18 +57,19 @@ public class Runner {
                                 .imageLink(product.getImageLink())
                                 .rating(product.getRating())
                                 .build();
-                        System.out.println(productDAO.create(product1));
+                        productDAO.create(product1);
                     };
                     transactionHelper.transaction(runnable);
                 });
 */
-        RoleDAO roleDAO = new RoleDAOImpl();
+
+
+        RoleDAO roleDAO = new RoleDAOImpl(transactionHelper);
         Role role = Role.builder()
                 .role(RoleEnum.ADMIN)
                 .build();
         Runnable runnable = () -> {
             roleDAO.create(role);
-            System.out.println(123);
         };
 
         transactionHelper.transaction(runnable);

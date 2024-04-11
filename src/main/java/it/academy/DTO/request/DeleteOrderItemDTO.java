@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class OrderItemDTO {
+public class DeleteOrderItemDTO {
+
     private Long productId;
     private Long orderId;
-    private Long quantity;
-    private Double price;
+
 }

@@ -24,7 +24,7 @@ public class GetAllCartItemsCommand implements Command {
             CartService cartService = new CartServiceImpl();
             String resp = GSON.toJson(cartService.getAllCartByUserId(value));
             ResponseHelper.sendJsonResponse(response, resp);
-        }catch (ProductNotFoundException | UserNotFoundException e){
+        } catch (ProductNotFoundException | UserNotFoundException e) {
             ResponseHelper.sendResponseWithStatus(response, HttpServletResponse.SC_NOT_FOUND, e.getMessage());
         }
     }

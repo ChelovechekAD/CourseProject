@@ -8,9 +8,13 @@ import lombok.NonNull;
 
 public interface UserService {
     void appendRole(@NonNull String roleName, @NonNull Long userId);
+
     void deleteUser(@NonNull Long id);
+
     void updateUser(@NonNull UpdateUserDTO dto);
+
     UsersDTO getUsersPage(@NonNull RequestDataDetailsDTO requestDataDetailsDTO);
+
     UserDTO getUserById(@NonNull Long id);
 
 }

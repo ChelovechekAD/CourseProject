@@ -5,7 +5,6 @@ import it.academy.DTO.response.ProductsDTO;
 import it.academy.commands.Command;
 import it.academy.services.ProductService;
 import it.academy.services.impl.ProductServiceImpl;
-import it.academy.utilities.Constants;
 import it.academy.utilities.Extractor;
 import it.academy.utilities.ResponseHelper;
 import jakarta.servlet.http.HttpServletRequest;

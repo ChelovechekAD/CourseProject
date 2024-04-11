@@ -10,28 +10,27 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Entity
-@Table (name = "users",
-    uniqueConstraints = @UniqueConstraint(columnNames = "email")
+@Table(name = "users",
+        uniqueConstraints = @UniqueConstraint(columnNames = "email")
 )
 public class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column (nullable = false)
+    @Column(nullable = false)
     private String name;
-    @Column (nullable = false)
+    @Column(nullable = false)
     private String surname;
-    @Column (nullable = false)
+    @Column(nullable = false)
     private String email;
-    @Column (nullable = false)
+    @Column(nullable = false)
     private String password;
     @Column
     @Embedded

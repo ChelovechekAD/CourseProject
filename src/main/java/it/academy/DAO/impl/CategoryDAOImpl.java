@@ -1,25 +1,23 @@
 package it.academy.DAO.impl;
 
 import it.academy.DAO.CategoryDAO;
-import it.academy.models.*;
-import it.academy.models.embedded.CartItemPK;
-import it.academy.models.embedded.CartItemPK_;
+import it.academy.models.Category;
+import it.academy.models.Category_;
 import it.academy.utilities.Constants;
 import it.academy.utilities.TransactionHelper;
-import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Root;
 
 import java.util.List;
 
 public class CategoryDAOImpl extends DAOImpl<Category, Long> implements CategoryDAO {
 
-    public CategoryDAOImpl(){
+    public CategoryDAOImpl() {
         super(Category.class);
     }
-    public CategoryDAOImpl(TransactionHelper transactionHelper){
+
+    public CategoryDAOImpl(TransactionHelper transactionHelper) {
         super(Category.class, transactionHelper);
     }
 
@@ -38,7 +36,7 @@ public class CategoryDAOImpl extends DAOImpl<Category, Long> implements Category
 
     @Override
     public List<Category> getCategoriesPage() {
-         return transactionHelper.entityManager()
+        return transactionHelper.entityManager()
                 .createQuery(Constants.SELECT_FROM_CATEGORY, Category.class)
                 .getResultList();
     }

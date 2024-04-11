@@ -68,28 +68,20 @@ public class JwtProvider {
             }
             return true;
         } catch (ExpiredJwtException expEx) {
-            System.out.println(TOKEN_ERROR);
             //log.error(TOKEN_ERROR, expEx);
         } catch (UnsupportedJwtException unsEx) {
-            System.out.println(UNSUPPORTED_JWT_ERROR);
 //            log.error(UNSUPPORTED_JWT_ERROR, unsEx);
         } catch (MalformedJwtException mjEx) {
-            System.out.println(MALFORMED_JWT_ERROR);
 //            log.error(MALFORMED_JWT_ERROR, mjEx);
         } catch (SignatureException sEx) {
-            System.out.println(SIGNATURE_ERROR);
 //            log.error(SIGNATURE_ERROR, sEx);
         } catch (Exception e) {
-            System.out.println(INVALID_TOKEN_ERROR);
 //            log.error(INVALID_TOKEN_ERROR, e);
         }
         return false;
     }
 
-    public boolean validateAccessToken(@NonNull String token/*, @NonNull String email*/) /*throws AuthenticationException */ {
-        /*if (!email.equals(getAccessClaims(token).getSubject())) {
-            throw new AuthenticationException("Wrong email");
-        }*/
+    public boolean validateAccessToken(@NonNull String token) {
         return validateToken(token, jwtAccessKey);
     }
 

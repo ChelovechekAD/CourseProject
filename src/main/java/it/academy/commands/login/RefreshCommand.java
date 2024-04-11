@@ -27,20 +27,20 @@ public class RefreshCommand implements Command {
         try {
             AuthService authService = new AuthServiceImpl();
             Optional<Cookie> cookie = Arrays.stream(request.getCookies()).filter(
-                    c -> Objects.equals(c.getName(), Constants.REFRESH_TOKEN_ATTR_NAME))
+                            c -> Objects.equals(c.getName(), Constants.REFRESH_TOKEN_ATTR_NAME))
                     .findFirst();
             String cookieValue = cookie.map(Cookie::getValue).orElse(null);
-            if (cookieValue == null){
+            if (cookieValue == null) {
                 ResponseHelper.sendResponseWithStatus(response, HttpServletResponse.SC_UNAUTHORIZED, Constants.UNAUTHORIZED);
                 return;
             }
             LoginUserJwtDTO loginUserJwtDTO = authService.reLoginUser(cookieValue);
             Cookie updateCookie = new Cookie(Constants.REFRESH_TOKEN_ATTR_NAME, loginUserJwtDTO.getRefreshToken());
-            updateCookie.setMaxAge(Constants.JWT_REFRESH_EXPIRATION*60);
+            updateCookie.setMaxAge(Constants.JWT_REFRESH_EXPIRATION * 60);
             response.addCookie(updateCookie);
             String resp = GSON.toJson(loginUserJwtDTO);
             ResponseHelper.sendJsonResponse(response, resp);
-        }catch (UserNotFoundException | TokenNotFound | RefreshTokenInvalidException e){
+        } catch (UserNotFoundException | TokenNotFound | RefreshTokenInvalidException e) {
             Cookie deleteCookie = new Cookie(Constants.REFRESH_TOKEN_ATTR_NAME, "");
             deleteCookie.setMaxAge(0);
             response.addCookie(deleteCookie);

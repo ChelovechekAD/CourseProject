@@ -4,6 +4,7 @@ import it.academy.DAO.UserDAO;
 import it.academy.exceptions.UserNotFoundException;
 import it.academy.models.Order;
 import it.academy.models.*;
+import it.academy.models.embedded.CartItemPK_;
 import it.academy.models.embedded.OrderItemPK_;
 import it.academy.utilities.Constants;
 import it.academy.utilities.TransactionHelper;
@@ -14,6 +15,7 @@ public class UserDAOImpl extends DAOImpl<User, Long> implements UserDAO {
     public UserDAOImpl() {
         super(User.class);
     }
+
     public UserDAOImpl(TransactionHelper transactionHelper) {
         super(User.class, transactionHelper);
     }
@@ -21,7 +23,7 @@ public class UserDAOImpl extends DAOImpl<User, Long> implements UserDAO {
     @Override
     public User getUserByEmail(String email) {
         String param = Constants.SELECT_FROM_USER_WHERE_EMAIL_USER.substring(
-                Constants.SELECT_FROM_USER_WHERE_EMAIL_USER.lastIndexOf(":")+1);
+                Constants.SELECT_FROM_USER_WHERE_EMAIL_USER.lastIndexOf(":") + 1);
         return transactionHelper.entityManager()
                 .createQuery(Constants.SELECT_FROM_USER_WHERE_EMAIL_USER, User.class)
                 .setParameter(param, email)
@@ -31,7 +33,7 @@ public class UserDAOImpl extends DAOImpl<User, Long> implements UserDAO {
     @Override
     public Boolean existUserByEmail(String email) {
         String param = Constants.SELECT_COUNT_FROM_USER_WHERE_EMAIL_USER.substring(
-                Constants.SELECT_COUNT_FROM_USER_WHERE_EMAIL_USER.lastIndexOf(":")+1);
+                Constants.SELECT_COUNT_FROM_USER_WHERE_EMAIL_USER.lastIndexOf(":") + 1);
         return transactionHelper.entityManager()
                 .createQuery(Constants.SELECT_COUNT_FROM_USER_WHERE_EMAIL_USER, Long.class)
                 .setParameter(param, email)
@@ -63,6 +65,12 @@ public class UserDAOImpl extends DAOImpl<User, Long> implements UserDAO {
         Root<Order> root = orderCriteriaDelete.from(Order.class);
         orderCriteriaDelete.where(cb.equal(root.get(Order_.USER_ID), user));
         transactionHelper.entityManager().createQuery(orderCriteriaDelete).executeUpdate();
+
+        CriteriaDelete<CartItem> cartDeleteQuery = cb.createCriteriaDelete(CartItem.class);
+        Root<CartItem> root1 = cartDeleteQuery.from(CartItem.class);
+        cartDeleteQuery.where(cb.equal(root1.get(CartItem_.CART_ITEM_PK).get(CartItemPK_.USER_ID), user));
+        transactionHelper.entityManager().createQuery(cartDeleteQuery).executeUpdate();
+
 
         transactionHelper.remove(user);
 

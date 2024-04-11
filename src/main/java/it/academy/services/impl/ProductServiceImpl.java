@@ -33,7 +33,7 @@ public class ProductServiceImpl implements ProductService {
     private final CategoryDAO categoryDAO;
     private final TransactionHelper transactionHelper;
 
-    public ProductServiceImpl(){
+    public ProductServiceImpl() {
         transactionHelper = new TransactionHelper();
         productDAO = new ProductDAOImpl(transactionHelper);
         categoryDAO = new CategoryDAOImpl(transactionHelper);
@@ -58,7 +58,7 @@ public class ProductServiceImpl implements ProductService {
             if (categoryDAO.get(createProductDTO.getCategoryId()) == null) {
                 throw new CatalogNotFoundException();
             }
-            if (createProductDTO.getId() == 0 || productDAO.get(createProductDTO.getId()) == null){
+            if (createProductDTO.getId() == 0 || productDAO.get(createProductDTO.getId()) == null) {
                 throw new ProductNotFoundException();
             }
             Product product = Converter.convertCreateProdDTOToEntity(createProductDTO);
@@ -69,23 +69,23 @@ public class ProductServiceImpl implements ProductService {
 
     public void deleteProduct(@NonNull Long id) {
         try {
-            transactionHelper.transaction(()-> productDAO.delete(id));
-        } catch (NotFoundException e){
+            transactionHelper.transaction(() -> productDAO.delete(id));
+        } catch (NotFoundException e) {
             ProductNotFoundException productNotFoundException = new ProductNotFoundException();
             productNotFoundException.setStackTrace(e.getStackTrace());
             throw productNotFoundException;
         }
     }
 
-    public ProductDTO getProductById(@NonNull Long id){
+    public ProductDTO getProductById(@NonNull Long id) {
         Product product = productDAO.get(id);
-        if (product == null){
+        if (product == null) {
             throw new ProductNotFoundException();
         }
         return Converter.convertProdEntityToDTO(product);
     }
 
-    public ProductsDTO getAllExistProducts(@NonNull RequestDataDetailsDTO requestDataDetailsDTO){
+    public ProductsDTO getAllExistProducts(@NonNull RequestDataDetailsDTO requestDataDetailsDTO) {
         Supplier<ProductsDTO> supplier = () -> {
             Long count = productDAO.getCountOf();
             List<Product> products = productDAO.getPage(requestDataDetailsDTO.getCountPerPage(),
@@ -95,7 +95,7 @@ public class ProductServiceImpl implements ProductService {
         return transactionHelper.transaction(supplier);
     }
 
-    public ProductsDTO getAllExistProductByCategoryName(@NonNull GetProductPageByCategoryDTO dto){
+    public ProductsDTO getAllExistProductByCategoryName(@NonNull GetProductPageByCategoryDTO dto) {
         Supplier<ProductsDTO> supplier = () -> {
             CriteriaBuilder cb = transactionHelper.criteriaBuilder();
             CriteriaQuery<Product> cq = cb.createQuery(Product.class);
@@ -124,7 +124,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     public ProductsDTO getAllExistProductByFilterParam(@NonNull Integer pageNum,
-                                                       @NonNull Integer countPerPage, @NonNull Map<String, Object> paramMap){
+                                                       @NonNull Integer countPerPage, @NonNull Map<String, Object> paramMap) {
         Supplier<ProductsDTO> supplier = () -> {
             CriteriaBuilder builder = transactionHelper.criteriaBuilder();
             CriteriaQuery<Product> productQuery = builder.createQuery(Product.class);

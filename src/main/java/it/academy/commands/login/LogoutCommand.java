@@ -2,7 +2,6 @@ package it.academy.commands.login;
 
 import it.academy.commands.Command;
 import it.academy.utilities.Constants;
-import it.academy.utilities.ResponseHelper;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

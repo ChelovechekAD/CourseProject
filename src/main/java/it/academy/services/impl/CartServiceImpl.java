@@ -9,7 +9,6 @@ import it.academy.DAO.impl.UserDAOImpl;
 import it.academy.DTO.request.AddToCartDTO;
 import it.academy.DTO.request.DeleteItemFromCartDTO;
 import it.academy.DTO.request.UpdatedItemCartDTO;
-import it.academy.DTO.response.CartItemDTO;
 import it.academy.DTO.response.CartItemsDTO;
 import it.academy.exceptions.*;
 import it.academy.models.CartItem;
@@ -23,7 +22,6 @@ import lombok.NonNull;
 
 import java.util.List;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 public class CartServiceImpl implements CartService {
 
@@ -32,20 +30,20 @@ public class CartServiceImpl implements CartService {
     private final ProductDAO productDAO;
     private final UserDAO userDAO;
 
-    public CartServiceImpl(){
+    public CartServiceImpl() {
         transactionHelper = new TransactionHelper();
         cartItemDAO = new CartItemDAOImpl(transactionHelper);
         productDAO = new ProductDAOImpl(transactionHelper);
         userDAO = new UserDAOImpl(transactionHelper);
     }
 
-    public void addItemToCart(@NonNull AddToCartDTO dto){
+    public void addItemToCart(@NonNull AddToCartDTO dto) {
         Runnable supplier = () -> {
             Product product = productDAO.get(dto.getProductId());
             User user = userDAO.get(dto.getUserId());
             validateCartItemPK(user, product);
             CartItemPK cartItemPK = new CartItemPK(user, product);
-            if (cartItemDAO.get(cartItemPK) != null){
+            if (cartItemDAO.get(cartItemPK) != null) {
                 throw new CartItemExistException();
             }
 
@@ -59,8 +57,8 @@ public class CartServiceImpl implements CartService {
         transactionHelper.transaction(supplier);
     }
 
-    public void deleteItemFromCart(@NonNull DeleteItemFromCartDTO dto){
-        try{
+    public void deleteItemFromCart(@NonNull DeleteItemFromCartDTO dto) {
+        try {
             Runnable runnable = () -> {
                 Product product = productDAO.get(dto.getProductId());
                 User user = userDAO.get(dto.getUserId());
@@ -69,12 +67,12 @@ public class CartServiceImpl implements CartService {
                 cartItemDAO.delete(cartItemPK);
             };
             transactionHelper.transaction(runnable);
-        }catch (NotFoundException e){
+        } catch (NotFoundException e) {
             throw new CartItemNotFoundException();
         }
     }
 
-    public void updateItemFromCart(@NonNull UpdatedItemCartDTO dto){
+    public void updateItemFromCart(@NonNull UpdatedItemCartDTO dto) {
         Runnable runnable = () -> {
             Product product = productDAO.get(dto.getProductId());
             User user = userDAO.get(dto.getUserId());
@@ -90,7 +88,7 @@ public class CartServiceImpl implements CartService {
         transactionHelper.transaction(runnable);
     }
 
-    public CartItemsDTO getAllCartByUserId(@NonNull Long userId){
+    public CartItemsDTO getAllCartByUserId(@NonNull Long userId) {
         Supplier<CartItemsDTO> supplier = () -> {
             User user = userDAO.get(userId);
             if (user == null) {
@@ -102,7 +100,7 @@ public class CartServiceImpl implements CartService {
         return transactionHelper.transaction(supplier);
     }
 
-    private void validateCartItemPK(User user, Product product){
+    private void validateCartItemPK(User user, Product product) {
         if (product == null) {
             throw new ProductNotFoundException();
         }

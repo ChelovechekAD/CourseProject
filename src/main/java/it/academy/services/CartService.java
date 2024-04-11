@@ -9,7 +9,10 @@ import lombok.NonNull;
 public interface CartService {
 
     void addItemToCart(@NonNull AddToCartDTO dto);
+
     void deleteItemFromCart(@NonNull DeleteItemFromCartDTO dto);
+
     void updateItemFromCart(@NonNull UpdatedItemCartDTO dto);
+
     CartItemsDTO getAllCartByUserId(@NonNull Long userId);
 }

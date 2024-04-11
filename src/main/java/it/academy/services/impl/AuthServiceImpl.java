@@ -9,11 +9,7 @@ import it.academy.DAO.impl.RoleDAOImpl;
 import it.academy.DAO.impl.UserDAOImpl;
 import it.academy.DTO.request.LoginUserDTO;
 import it.academy.DTO.request.RegUserDTO;
-import it.academy.DTO.request.RequestDataDetailsDTO;
-import it.academy.DTO.request.UpdateUserDTO;
 import it.academy.DTO.response.LoginUserJwtDTO;
-import it.academy.DTO.response.UserDTO;
-import it.academy.DTO.response.UsersDTO;
 import it.academy.enums.RoleEnum;
 import it.academy.exceptions.*;
 import it.academy.models.RefreshToken;
@@ -25,10 +21,8 @@ import it.academy.utilities.TransactionHelper;
 import lombok.NonNull;
 import org.mindrot.jbcrypt.BCrypt;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 public class AuthServiceImpl implements AuthService {
 
@@ -38,7 +32,7 @@ public class AuthServiceImpl implements AuthService {
     private final RefreshTokenDAO refreshTokenDAO;
     private final JwtProvider jwtProvider;
 
-    public AuthServiceImpl(){
+    public AuthServiceImpl() {
         transactionHelper = new TransactionHelper();
         userDAO = new UserDAOImpl(transactionHelper);
         roleDAO = new RoleDAOImpl(transactionHelper);
@@ -46,13 +40,13 @@ public class AuthServiceImpl implements AuthService {
         jwtProvider = new JwtProvider();
     }
 
-    public void regUser(@NonNull RegUserDTO regUserDTO){
+    public void regUser(@NonNull RegUserDTO regUserDTO) {
         System.out.println(regUserDTO);
         Runnable supplier = () -> {
-            if (!Objects.equals(regUserDTO.getPassword(), regUserDTO.getPasswordConfirm())){
+            if (!Objects.equals(regUserDTO.getPassword(), regUserDTO.getPasswordConfirm())) {
                 throw new PasswordMatchException();
             }
-            if (userDAO.existUserByEmail(regUserDTO.getEmail())){
+            if (userDAO.existUserByEmail(regUserDTO.getEmail())) {
                 throw new UserExistException();
             }
             User user = Converter.convertRegUserDTOToEntity(regUserDTO);
@@ -65,8 +59,8 @@ public class AuthServiceImpl implements AuthService {
         transactionHelper.transaction(supplier);
     }
 
-    public LoginUserJwtDTO loginUser(@NonNull LoginUserDTO loginUserDTO){
-        Supplier<LoginUserJwtDTO> supplier = ()-> {
+    public LoginUserJwtDTO loginUser(@NonNull LoginUserDTO loginUserDTO) {
+        Supplier<LoginUserJwtDTO> supplier = () -> {
             if (!userDAO.existUserByEmail(loginUserDTO.getEmail())) {
                 throw new UserNotFoundException();
             }
@@ -82,12 +76,12 @@ public class AuthServiceImpl implements AuthService {
         return transactionHelper.transaction(supplier);
     }
 
-    public LoginUserJwtDTO reLoginUser(@NonNull String refreshToken){
+    public LoginUserJwtDTO reLoginUser(@NonNull String refreshToken) {
         return transactionHelper.transaction(updateTokens(refreshToken));
     }
 
 
-    private Runnable saveToken(@NonNull String refreshToken){
+    private Runnable saveToken(@NonNull String refreshToken) {
         return () -> {
             String email = jwtProvider.getRefreshClaims(refreshToken).getSubject();
             if (refreshTokenDAO.existTokenByEmail(email)) {
@@ -107,9 +101,9 @@ public class AuthServiceImpl implements AuthService {
         };
     }
 
-    private Supplier<LoginUserJwtDTO> updateTokens(@NonNull String refreshToken){
+    private Supplier<LoginUserJwtDTO> updateTokens(@NonNull String refreshToken) {
         return () -> {
-            if(!jwtProvider.validateRefreshToken(refreshToken)) {
+            if (!jwtProvider.validateRefreshToken(refreshToken)) {
                 throw new RefreshTokenInvalidException();
             }
             String email = jwtProvider.getRefreshClaims(refreshToken).getSubject();
@@ -129,7 +123,7 @@ public class AuthServiceImpl implements AuthService {
         };
     }
 
-    private LoginUserJwtDTO getPairOfTokens(@NonNull User user){
+    private LoginUserJwtDTO getPairOfTokens(@NonNull User user) {
         return LoginUserJwtDTO.builder()
                 .refreshToken(jwtProvider.generateRefreshToken(user))
                 .accessToken(jwtProvider.generateAccessToken(user))

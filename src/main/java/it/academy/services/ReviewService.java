@@ -8,7 +8,10 @@ import lombok.NonNull;
 
 public interface ReviewService {
     void createReview(CreateReviewDTO createReviewDTO);
+
     ReviewDTO getSingleReviewOnProductByUserId(@NonNull Long userId, @NonNull Long prodId);
+
     void deleteReviewOnProductByUserId(@NonNull Long userId, @NonNull Long prodId);
+
     ReviewsDTO getAllReviewsPage(@NonNull RequestDataDetailsDTO requestDataDetailsDTO);
 }

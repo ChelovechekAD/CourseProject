@@ -1,6 +1,5 @@
 package it.academy.DTO.response;
 
-import it.academy.enums.RoleEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

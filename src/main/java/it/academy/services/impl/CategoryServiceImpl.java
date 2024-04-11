@@ -16,21 +16,25 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final TransactionHelper transactionHelper;
     private final CategoryDAO categoryDAO;
-    public CategoryServiceImpl(){
+
+    public CategoryServiceImpl() {
         transactionHelper = new TransactionHelper();
         categoryDAO = new CategoryDAOImpl(transactionHelper);
     }
 
-    public void addCategory(@NonNull CategoryDTO categoryDTO){
-        transactionHelper.transaction(()-> Converter.convertCategoryDTOToEntity(categoryDTO));
+    public void addCategory(@NonNull CategoryDTO categoryDTO) {
+        transactionHelper.transaction(() -> Converter.convertCategoryDTOToEntity(categoryDTO));
     }
-    public CategoryDTO getCategoryById(@NonNull Long id){
-        return transactionHelper.transaction(()->Converter.convertCategoryEntityToDTO(categoryDAO.get(id)));
+
+    public CategoryDTO getCategoryById(@NonNull Long id) {
+        return transactionHelper.transaction(() -> Converter.convertCategoryEntityToDTO(categoryDAO.get(id)));
     }
-    public CategoryDTO getCategoryByName(@NonNull String name){
-        return transactionHelper.transaction(()->Converter.convertCategoryEntityToDTO(categoryDAO.getCategoryByName(name)));
+
+    public CategoryDTO getCategoryByName(@NonNull String name) {
+        return transactionHelper.transaction(() -> Converter.convertCategoryEntityToDTO(categoryDAO.getCategoryByName(name)));
     }
-    public CategoriesDTO getAllCategories(){
+
+    public CategoriesDTO getAllCategories() {
 
         List<Category> list = transactionHelper.transaction(categoryDAO::getCategoriesPage);
         return Converter.convertCategoriesListToDTO(list);

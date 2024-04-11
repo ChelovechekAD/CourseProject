@@ -6,7 +6,10 @@ import lombok.NonNull;
 
 public interface CategoryService {
     void addCategory(@NonNull CategoryDTO categoryDTO);
+
     CategoryDTO getCategoryById(@NonNull Long id);
+
     CategoryDTO getCategoryByName(@NonNull String name);
+
     CategoriesDTO getAllCategories();
 }

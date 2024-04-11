@@ -4,7 +4,7 @@ import it.academy.utilities.Constants;
 
 public class CatalogNotFoundException extends NotFoundException {
 
-    public CatalogNotFoundException(){
+    public CatalogNotFoundException() {
         super(Constants.REQUESTED_CATALOG_NOT_EXIST);
     }
 

@@ -78,4 +78,6 @@ public class Constants {
     public static final String UNSUPPORTED_FIELD_TYPE = "Unsupported field type: ";
     public static final String USER_ID_PARAM_KEY = "userId";
     public static final String SELECT_FROM_PRODUCT = "select p from Product p";
+    public static final String CORS_REQUEST_CHECK_HEADER_PARAM = "access-control-request-method";
+    public static final int LENGTH_OF_BEARER_PART = 7;
 }

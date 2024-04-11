@@ -26,5 +26,4 @@ public class RefreshToken implements Serializable {
     private String userEmail;
 
 
-
 }

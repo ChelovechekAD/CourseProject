@@ -12,7 +12,7 @@ public class Extractor {
 
     public static <T> T extractSingleParamFromRequest(HttpServletRequest request, String paramKey, Class<T> targetType) {
         String value = request.getParameter(paramKey);
-        if (value == null){
+        if (value == null) {
             throw new RequestParamInvalidException();
         }
         return (T) convertToType(value, targetType);
