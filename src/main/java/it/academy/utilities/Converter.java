@@ -46,7 +46,7 @@ public class Converter {
     public static OrderItemProductDTO convertOrderItemAndProductEntitiesToDTO(OrderItem orderItem, Product product) {
         return OrderItemProductDTO.builder()
                 .productId(product.getId())
-                .image_link(product.getImageLink())
+                .imageLink(product.getImageLink())
                 .name(product.getName())
                 .count(orderItem.getCount())
                 .price(orderItem.getPrice())
