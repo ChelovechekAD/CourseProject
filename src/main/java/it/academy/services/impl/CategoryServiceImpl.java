@@ -23,7 +23,12 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     public void addCategory(@NonNull CategoryDTO categoryDTO) {
-        transactionHelper.transaction(() -> Converter.convertCategoryDTOToEntity(categoryDTO));
+        Category category = Converter.convertCategoryDTOToEntity(categoryDTO);
+        transactionHelper.transaction(() -> Converter.convertCategoryEntityToDTO(categoryDAO.create(category)));
+    }
+
+    public void deleteCategory(@NonNull Long categoryId){
+        transactionHelper.transaction(()->categoryDAO.delete(categoryId));
     }
 
     public CategoryDTO getCategoryById(@NonNull Long id) {

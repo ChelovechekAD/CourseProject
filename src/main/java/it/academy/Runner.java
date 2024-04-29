@@ -35,11 +35,11 @@ public class Runner {
         //userDAO.delete(1L);
 
         CategoryDAO categoryDAO = new CategoryDAOImpl(transactionHelper);
-/*        transactionHelper.transaction(() -> categoryDAO.create(Category.builder().categoryName("Стулья").build()));
+        transactionHelper.transaction(() -> categoryDAO.create(Category.builder().categoryName("Стулья").build()));
         transactionHelper.transaction(() -> categoryDAO.create(Category.builder().categoryName("Столы").build()));
         transactionHelper.transaction(() -> categoryDAO.create(Category.builder().categoryName("Шкафы").build()));
         transactionHelper.transaction(() -> categoryDAO.create(Category.builder().categoryName("Диваны").build()));
-        transactionHelper.transaction(() -> categoryDAO.create(Category.builder().categoryName("Двери").build()));*/
+        transactionHelper.transaction(() -> categoryDAO.create(Category.builder().categoryName("Двери").build()));
 
         
         
@@ -66,7 +66,7 @@ public class Runner {
                 });
 
 
-/*
+
         RoleDAO roleDAO = new RoleDAOImpl(transactionHelper);
         Role role = Role.builder()
                 .role(RoleEnum.ADMIN)
@@ -75,7 +75,7 @@ public class Runner {
             roleDAO.create(role);
         };
 
-        transactionHelper.transaction(runnable);*/
+        transactionHelper.transaction(runnable);
     }
 
 }

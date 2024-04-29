@@ -57,6 +57,12 @@ public class UserDAOImpl extends DAOImpl<User, Long> implements UserDAO {
         orderSubquery.select(subRoot);
         orderSubquery.where(cb.equal(userJoin.get(User_.ID), id));
 
+        Root<OrderItem> orderItemRoot = orderItemCriteriaDelete.from(OrderItem.class);
+        orderItemCriteriaDelete
+                .where(orderItemRoot.get(OrderItem_.ORDER_ITEM_PK).get(OrderItemPK_.ORDER_ID).in(orderSubquery));
+        transactionHelper.entityManager().createQuery(orderItemCriteriaDelete).executeUpdate();
+
+
         CriteriaDelete<Order> orderCriteriaDelete = cb.createCriteriaDelete(Order.class);
         Root<Order> root = orderCriteriaDelete.from(Order.class);
         orderCriteriaDelete.where(cb.equal(root.get(Order_.USER_ID), user));
