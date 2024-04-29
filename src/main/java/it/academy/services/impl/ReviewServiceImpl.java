@@ -6,15 +6,13 @@ import it.academy.DAO.UserDAO;
 import it.academy.DAO.impl.ProductDAOImpl;
 import it.academy.DAO.impl.ReviewDAOImpl;
 import it.academy.DAO.impl.UserDAOImpl;
-import it.academy.DTO.request.CreateReviewDTO;
-import it.academy.DTO.request.RequestDataDetailsDTO;
+import it.academy.DTO.request.*;
 import it.academy.DTO.response.ReviewDTO;
 import it.academy.DTO.response.ReviewsDTO;
+import it.academy.DTO.response.UserReviewInfoDTO;
+import it.academy.DTO.response.UserReviewsDTO;
 import it.academy.exceptions.*;
-import it.academy.models.Product;
-import it.academy.models.Review;
-import it.academy.models.Review_;
-import it.academy.models.User;
+import it.academy.models.*;
 import it.academy.models.embedded.ReviewPK;
 import it.academy.models.embedded.ReviewPK_;
 import it.academy.services.ReviewService;
@@ -22,6 +20,7 @@ import it.academy.utilities.Converter;
 import it.academy.utilities.TransactionHelper;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Root;
 import lombok.NonNull;
 
@@ -53,7 +52,7 @@ public class ReviewServiceImpl implements ReviewService {
                 throw new ReviewExistException();
             }
             Review review = Review.builder()
-                    .rating(createReviewDTO.getRate())
+                    .rating(createReviewDTO.getRating())
                     .reviewPK(reviewPK)
                     .description(createReviewDTO.getDescription())
                     .build();
@@ -64,10 +63,10 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public ReviewDTO getSingleReviewOnProductByUserId(@NonNull Long userId, @NonNull Long prodId) {
+    public ReviewDTO getSingleReviewOnProductByUserId(@NonNull GetReviewDTO dto) {
         Supplier<ReviewDTO> supplier = () -> {
-            User user = userDAO.get(userId);
-            Product product = productDAO.get(prodId);
+            User user = userDAO.get(dto.getUserId());
+            Product product = productDAO.get(dto.getProductId());
             validateReviewPK(user, product);
             ReviewPK reviewPK = new ReviewPK(user, product);
             Review review = reviewDAO.get(reviewPK);
@@ -80,10 +79,10 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public void deleteReviewOnProductByUserId(@NonNull Long userId, @NonNull Long prodId) {
+    public void deleteReviewOnProductByUserId(@NonNull DeleteReviewDTO dto) {
         Runnable runnable = () -> {
-            User user = userDAO.get(userId);
-            Product product = productDAO.get(prodId);
+            User user = userDAO.get(dto.getUserId());
+            Product product = productDAO.get(dto.getProductId());
             validateReviewPK(user, product);
             ReviewPK reviewPK = new ReviewPK(user, product);
             try {
@@ -97,12 +96,32 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public ReviewsDTO getAllReviewsPage(@NonNull RequestDataDetailsDTO requestDataDetailsDTO) {
+    public ReviewsDTO getAllReviewsPage(@NonNull GetReviewsDTO getReviewsDTO) {
         Supplier<ReviewsDTO> supplier = () -> {
-            List<Review> list = transactionHelper.transaction(() -> reviewDAO.getPage(requestDataDetailsDTO.getCountPerPage(),
-                    requestDataDetailsDTO.getPageNum()));
-            Integer count = Math.toIntExact(transactionHelper.transaction(reviewDAO::getCountOf));
+            List<Review> list = reviewDAO.getReviewsOnProduct(getReviewsDTO.getPageNum(),
+                    getReviewsDTO.getCountPerPage(),
+                    getReviewsDTO.getProductId());
+            Integer count = Math.toIntExact(reviewDAO.getCountOfReviewsOnProduct(getReviewsDTO.getProductId()));
             return Converter.convertListReviewEntityToDTO(list, count);
+        };
+        return transactionHelper.transaction(supplier);
+    }
+    @Override
+    public UserReviewsDTO getAllUserReviews(@NonNull GetUserReviewsDTO getUserReviewsDTO) {
+        Supplier<UserReviewsDTO> supplier = () -> {
+            CriteriaBuilder cb = transactionHelper.criteriaBuilder();
+            CriteriaQuery<UserReviewInfoDTO> cq = cb.createQuery(UserReviewInfoDTO.class);
+            Root<Review> root = cq.from(Review.class);
+            Join<Review, ReviewPK> pkJoin = root.join(Review_.REVIEW_PK);
+            Join<ReviewPK, Product> productJoin = pkJoin.join(ReviewPK_.PRODUCT_ID);
+            cq.multiselect(root.get(Review_.DESCRIPTION), root.get(Review_.RATING),
+                    productJoin.get(Product_.ID),
+                            productJoin.get(Product_.IMAGE_LINK),
+                            productJoin.get(Product_.NAME))
+                    .where(root.get(Review_.REVIEW_PK).get(ReviewPK_.USER_ID));
+            List<UserReviewInfoDTO> list = transactionHelper.entityManager().createQuery(cq).getResultList();
+            Integer count = Math.toIntExact(reviewDAO.getCountOfUserReviews(getUserReviewsDTO.getUserId()));
+            return new UserReviewsDTO(list, count);
         };
         return transactionHelper.transaction(supplier);
     }
@@ -114,12 +133,11 @@ public class ReviewServiceImpl implements ReviewService {
         query.select(criteriaBuilder.avg(root.get(Review_.RATING)))
                 .where(criteriaBuilder.equal(root.get(Review_.REVIEW_PK).get(ReviewPK_.PRODUCT_ID), product));
         Double newRating = transactionHelper.entityManager().createQuery(query).getSingleResult();
+        if (newRating == null){
+            newRating = 0d;
+        }
         product.setRating(newRating);
         productDAO.update(product);
-        /*Double avg = transactionHelper.entityManager()
-                .createQuery("select avg(r.rating) from Review r where reviewPK.productId=:id", Double.class)
-                .setParameter("id", product.getId())
-                .getSingleResult();*/
     }
 
     private void validateReviewPK(User user, Product product) {

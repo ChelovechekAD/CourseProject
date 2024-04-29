@@ -168,10 +168,21 @@ public class Converter {
                 .build();
     }
 
+/*    public static UserReviewInfoDTO convertToUserReviewDTO(Review review, Product product) {
+        return UserReviewInfoDTO.builder()
+                .description()
+                .build();
+    }*/
+
     public static ReviewsDTO convertListReviewEntityToDTO(List<Review> reviewList, Integer count) {
         List<ReviewDTO> list = reviewList.stream()
                 .map(Converter::convertReviewEntityToDTO)
                 .collect(Collectors.toList());
         return new ReviewsDTO(list, count);
     }
+
+  /*  public static UserReviewsDTO convertListReviewEntityToDTO(Integer count, List<UserReviewInfoDTO> list){
+        List<UserReviewInfoDTO> outList = list.stream()
+                .map()
+    }*/
 }

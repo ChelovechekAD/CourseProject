@@ -1,7 +1,7 @@
 package it.academy.servlets.filters;
 
 import io.jsonwebtoken.Claims;
-import it.academy.Components.JwtProvider;
+import it.academy.сomponents.JwtProvider;
 import it.academy.commands.factory.CommandEnum;
 import it.academy.enums.RoleEnum;
 import it.academy.models.Role;

@@ -1,6 +1,5 @@
 package it.academy.DTO.request;
 
-import it.academy.enums.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,9 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UpdateOrderStatusDTO {
+public class GetUserOrderPageDTO {
 
-    private Long orderId;
-    private OrderStatus orderStatus;
+    private Integer pageNum;
+    private Integer countPerPage;
+    private Long userId;
 
 }

@@ -2,10 +2,10 @@ package it.academy.commands.factory;
 
 
 import it.academy.commands.Command;
+import it.academy.commands.admin.ChangeOrderStatusCommand;
 import it.academy.commands.admin.GetAllOrdersPageCommand;
-import it.academy.commands.catalog.AllCategoriesCommand;
-import it.academy.commands.catalog.FilteredProductsPageCommand;
-import it.academy.commands.catalog.ProductsPageCommand;
+import it.academy.commands.admin.GetAllUsersCommand;
+import it.academy.commands.catalog.*;
 import it.academy.commands.login.LoginCommand;
 import it.academy.commands.login.LogoutCommand;
 import it.academy.commands.login.RefreshCommand;
@@ -14,8 +14,7 @@ import it.academy.commands.ordercart.AddCartItemCommand;
 import it.academy.commands.ordercart.CreateOrderCommand;
 import it.academy.commands.ordercart.DeleteCartItemCommand;
 import it.academy.commands.ordercart.GetAllCartItemsCommand;
-import it.academy.commands.user.GetOrderItemsCommand;
-import it.academy.commands.user.UpdateUserCommand;
+import it.academy.commands.user.*;
 
 public enum CommandEnum {
     POST_REGISTRATION(new RegistrationCommand()),
@@ -31,7 +30,18 @@ public enum CommandEnum {
     POST_UPDATE_USER(new UpdateUserCommand()),
     POST_CREATE_ORDER(new CreateOrderCommand()),
     GET_ORDERS_PAGE(new GetAllOrdersPageCommand()),
-    GET_ORDER_ITEMS(new GetOrderItemsCommand());
+    GET_ORDER_ITEMS(new GetOrderItemsCommand()),
+    GET_PRODUCT(new GetProductPageCommand()),
+    GET_REVIEW_FOR_PRODUCT(new GetReviewsPageCommand()),
+    POST_ADD_REVIEW(new AddReviewCommand()),
+    POST_DELETE_REVIEW(new DeleteReviewCommand()),
+    GET_USER_REVIEW(new GetReviewCommand()),
+    GET_ALL_USER_REVIEWS(new GetAllUserReviewsCommand()),
+    GET_USER_ORDERS(new GetUserOrdersCommand()),
+    POST_CHANGE_ORDER_STATUS(new ChangeOrderStatusCommand()),
+    POST_DELETE_USER(new DeleteUserCommand()),
+    GET_ALL_USERS(new GetAllUsersCommand()),
+    GET_USER(new GetUserCommand());
 
     private final Command command;
 

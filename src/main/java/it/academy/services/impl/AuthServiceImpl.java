@@ -1,6 +1,6 @@
 package it.academy.services.impl;
 
-import it.academy.Components.JwtProvider;
+import it.academy.сomponents.JwtProvider;
 import it.academy.DAO.RefreshTokenDAO;
 import it.academy.DAO.RoleDAO;
 import it.academy.DAO.UserDAO;

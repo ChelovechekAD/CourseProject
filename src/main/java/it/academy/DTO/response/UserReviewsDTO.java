@@ -1,18 +1,19 @@
-package it.academy.DTO.request;
+package it.academy.DTO.response;
 
-import it.academy.enums.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UpdateOrderStatusDTO {
+public class UserReviewsDTO {
 
-    private Long orderId;
-    private OrderStatus orderStatus;
+    private List<UserReviewInfoDTO> reviews;
+    private Integer countOfPages;
 
 }

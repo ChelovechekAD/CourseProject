@@ -20,6 +20,7 @@ import it.academy.utilities.TransactionHelper;
 import lombok.NonNull;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -74,7 +75,7 @@ public class OrderServiceImpl implements OrderService {
 
     public void changeOrderStatus(@NonNull UpdateOrderStatusDTO dto) {
         Runnable supplier = () -> {
-            OrderStatus status = OrderStatus.valueOf(dto.getOrderStatus().toUpperCase());
+            OrderStatus status = dto.getOrderStatus();
             Order order = orderDAO.get(dto.getOrderId());
             if (order == null) {
                 throw new OrderNotFoundException();
@@ -98,6 +99,22 @@ public class OrderServiceImpl implements OrderService {
             Long count = orderDAO.getCountOf();
             return new OrdersDTO(orderDTOList, count);
         };
+        return transactionHelper.transaction(supplier);
+    }
+    public OrdersDTO getListOfUserOrders(@NonNull GetUserOrderPageDTO dto) {
+        Supplier<OrdersDTO> supplier = () -> {
+
+            List<Order> orderList = orderDAO.getUserOrders(dto.getPageNum(), dto.getCountPerPage(), dto.getUserId());
+            List<OrderDTO> orderDTOList = orderList.stream().map(e ->
+                            Converter.convertOrderEntityToDTO(e, orderItemDAO.getCountOfByOrderId(e.getId())))
+                    .collect(Collectors.toList());
+            Long count = orderDAO.countOfUserOrders(dto.getUserId());
+            return new OrdersDTO(orderDTOList, count);
+        };
+
+        if (userDAO.get(dto.getUserId()) == null) {
+            throw new UserNotFoundException();
+        }
         return transactionHelper.transaction(supplier);
     }
 

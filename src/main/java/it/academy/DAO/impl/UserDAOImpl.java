@@ -6,6 +6,7 @@ import it.academy.models.Order;
 import it.academy.models.*;
 import it.academy.models.embedded.CartItemPK_;
 import it.academy.models.embedded.OrderItemPK_;
+import it.academy.models.embedded.ReviewPK_;
 import it.academy.utilities.Constants;
 import it.academy.utilities.TransactionHelper;
 import jakarta.persistence.criteria.*;
@@ -56,11 +57,6 @@ public class UserDAOImpl extends DAOImpl<User, Long> implements UserDAO {
         orderSubquery.select(subRoot);
         orderSubquery.where(cb.equal(userJoin.get(User_.ID), id));
 
-        Root<OrderItem> orderItemRoot = orderItemCriteriaDelete.from(OrderItem.class);
-        orderItemCriteriaDelete
-                .where(orderItemRoot.get(OrderItem_.ORDER_ITEM_PK).get(OrderItemPK_.ORDER_ID).in(orderSubquery));
-        transactionHelper.entityManager().createQuery(orderItemCriteriaDelete).executeUpdate();
-
         CriteriaDelete<Order> orderCriteriaDelete = cb.createCriteriaDelete(Order.class);
         Root<Order> root = orderCriteriaDelete.from(Order.class);
         orderCriteriaDelete.where(cb.equal(root.get(Order_.USER_ID), user));
@@ -71,6 +67,10 @@ public class UserDAOImpl extends DAOImpl<User, Long> implements UserDAO {
         cartDeleteQuery.where(cb.equal(root1.get(CartItem_.CART_ITEM_PK).get(CartItemPK_.USER_ID), user));
         transactionHelper.entityManager().createQuery(cartDeleteQuery).executeUpdate();
 
+        CriteriaDelete<Review> reviewDeleteQuery = cb.createCriteriaDelete(Review.class);
+        Root<Review> root2 = reviewDeleteQuery.from(Review.class);
+        reviewDeleteQuery.where(cb.equal(root2.get(Review_.REVIEW_PK).get(ReviewPK_.USER_ID), user));
+        transactionHelper.entityManager().createQuery(reviewDeleteQuery).executeUpdate();
 
         transactionHelper.remove(user);
 

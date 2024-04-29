@@ -1,19 +1,20 @@
-package it.academy.DTO.request;
+package it.academy.DTO.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CreateReviewDTO implements Serializable {
+public class UserReviewInfoDTO {
+
     private String description;
     private Double rating;
     private Long productId;
-    private Long userId;
+    private String imageLink;
+    private String name;
+
 }

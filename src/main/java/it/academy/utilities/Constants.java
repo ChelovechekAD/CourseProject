@@ -82,4 +82,5 @@ public class Constants {
     public static final int LENGTH_OF_BEARER_PART = 7;
     public static final int MULTI_TIME = 60;
     public static final String SQL_INSERT_PARAM_SIGN = ":";
+    public static final String PRODUCT_ID_PARAM_KEY = "product_id";
 }
