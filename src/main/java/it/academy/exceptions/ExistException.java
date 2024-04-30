@@ -2,12 +2,13 @@ package it.academy.exceptions;
 
 import it.academy.utilities.Constants;
 
-public class ExistException extends RuntimeException{
+public class ExistException extends RuntimeException {
 
-    public ExistException(String e){
+    public ExistException(String e) {
         super(e);
     }
-    public ExistException(){
+
+    public ExistException() {
         super(Constants.EXIST_EXCEPTION_MESSAGE);
     }
 

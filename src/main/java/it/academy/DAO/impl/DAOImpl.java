@@ -2,19 +2,16 @@ package it.academy.DAO.impl;
 
 import it.academy.DAO.DAO;
 import it.academy.exceptions.NotFoundException;
-import it.academy.exceptions.ProductNotFoundException;
-import it.academy.models.Product;
 import it.academy.utilities.Constants;
 import it.academy.utilities.TransactionHelper;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Optional;
 
 public class DAOImpl<T extends Serializable, R> implements DAO<T, R> {
 
-    protected TransactionHelper transactionHelper;
     private final Class<T> tClass;
+    protected TransactionHelper transactionHelper;
 
     public DAOImpl(Class<T> tClass) {
         transactionHelper = new TransactionHelper();

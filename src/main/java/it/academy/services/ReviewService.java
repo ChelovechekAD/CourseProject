@@ -14,5 +14,6 @@ public interface ReviewService {
     void deleteReviewOnProductByUserId(@NonNull DeleteReviewDTO deleteReviewDTO);
 
     ReviewsDTO getAllReviewsPage(@NonNull GetReviewsDTO getReviewsDTO);
+
     UserReviewsDTO getAllUserReviews(@NonNull GetUserReviewsDTO getUserReviewsDTO);
 }

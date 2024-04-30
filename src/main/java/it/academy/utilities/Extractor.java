@@ -10,8 +10,6 @@ import lombok.experimental.UtilityClass;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 @UtilityClass
 public class Extractor {
@@ -46,13 +44,13 @@ public class Extractor {
     public static <T> T extractSingleParamFromRequestBody(String req, String paramKey, Class<T> targetType) throws IOException {
         JsonElement tree = JsonParser.parseString(req);
         JsonElement elem = null;
-        if (tree.isJsonObject()){
-             elem = tree.getAsJsonObject().get(paramKey);
+        if (tree.isJsonObject()) {
+            elem = tree.getAsJsonObject().get(paramKey);
         } else {
             JsonArray elements = tree.getAsJsonArray();
-            for(int i = 0; i < elements.size(); i++){
+            for (int i = 0; i < elements.size(); i++) {
                 JsonElement testElem = elements.get(i).getAsJsonObject().get(paramKey);
-                if (testElem != null){
+                if (testElem != null) {
                     elem = testElem;
                     break;
                 }
@@ -61,7 +59,7 @@ public class Extractor {
         if (elem == null) {
             throw new RequestParamInvalidException();
         }
-        return  (T) convertToTypeJsonElement(elem, targetType);
+        return (T) convertToTypeJsonElement(elem, targetType);
     }
 
     private static Object convertToType(String value, Class<?> targetType) {
@@ -76,11 +74,11 @@ public class Extractor {
             return value;
         } else if (targetType == Boolean.class || targetType == boolean.class) {
             return Boolean.getBoolean(value);
-        }
-        else {
+        } else {
             throw new RequestParamInvalidException(Constants.UNSUPPORTED_FIELD_TYPE + targetType);
         }
     }
+
     private static Object convertToTypeJsonElement(JsonElement value, Class<?> targetType) {
 
         if (targetType == int.class || targetType == Integer.class) {
@@ -93,8 +91,7 @@ public class Extractor {
             return value.getAsString();
         } else if (targetType == Boolean.class || targetType == boolean.class) {
             return value.getAsBoolean();
-        }
-        else {
+        } else {
             throw new RequestParamInvalidException(Constants.UNSUPPORTED_FIELD_TYPE + targetType);
         }
     }

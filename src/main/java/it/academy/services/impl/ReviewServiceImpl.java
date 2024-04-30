@@ -106,6 +106,7 @@ public class ReviewServiceImpl implements ReviewService {
         };
         return transactionHelper.transaction(supplier);
     }
+
     @Override
     public UserReviewsDTO getAllUserReviews(@NonNull GetUserReviewsDTO getUserReviewsDTO) {
         Supplier<UserReviewsDTO> supplier = () -> {
@@ -115,7 +116,7 @@ public class ReviewServiceImpl implements ReviewService {
             Join<Review, ReviewPK> pkJoin = root.join(Review_.REVIEW_PK);
             Join<ReviewPK, Product> productJoin = pkJoin.join(ReviewPK_.PRODUCT_ID);
             cq.multiselect(root.get(Review_.DESCRIPTION), root.get(Review_.RATING),
-                    productJoin.get(Product_.ID),
+                            productJoin.get(Product_.ID),
                             productJoin.get(Product_.IMAGE_LINK),
                             productJoin.get(Product_.NAME))
                     .where(root.get(Review_.REVIEW_PK).get(ReviewPK_.USER_ID));
@@ -133,7 +134,7 @@ public class ReviewServiceImpl implements ReviewService {
         query.select(criteriaBuilder.avg(root.get(Review_.RATING)))
                 .where(criteriaBuilder.equal(root.get(Review_.REVIEW_PK).get(ReviewPK_.PRODUCT_ID), product));
         Double newRating = transactionHelper.entityManager().createQuery(query).getSingleResult();
-        if (newRating == null){
+        if (newRating == null) {
             newRating = 0d;
         }
         product.setRating(newRating);

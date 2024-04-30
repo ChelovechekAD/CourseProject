@@ -41,7 +41,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     public void addCategory(@NonNull String categoryName) {
-        Optional.of(categoryDAO.existByCategoryName(categoryName)).filter(p->p.equals(Boolean.FALSE))
+        Optional.of(categoryDAO.existByCategoryName(categoryName)).filter(p -> p.equals(Boolean.FALSE))
                 .orElseThrow(CategoryExistException::new);
         Category category = Category.builder()
                 .categoryName(categoryName)
@@ -65,7 +65,7 @@ public class CategoryServiceImpl implements CategoryService {
                                 .get(Product_.CATEGORY_ID)
                                 .get(Category_.ID), categoryId));
                 Optional.of(transactionHelper.entityManager().createQuery(cq).getResultList())
-                        .filter(r->r.size() == 0)
+                        .filter(r -> r.size() == 0)
                         .orElseThrow(ProductUsedInOrdersException::new);
             }
             categoryDAO.delete(categoryId);

@@ -1,8 +1,6 @@
 package it.academy.DAO.impl;
 
 import it.academy.DAO.ProductDAO;
-import it.academy.exceptions.NotFoundException;
-import it.academy.exceptions.ProductNotFoundException;
 import it.academy.models.Category_;
 import it.academy.models.Product;
 import it.academy.models.Product_;
@@ -14,7 +12,6 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 
 import java.util.List;
-import java.util.Optional;
 
 public class ProductDAOImpl extends DAOImpl<Product, Long> implements ProductDAO {
 

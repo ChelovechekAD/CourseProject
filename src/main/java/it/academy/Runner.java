@@ -41,19 +41,16 @@ public class Runner {
         transactionHelper.transaction(() -> categoryDAO.create(Category.builder().categoryName("Диваны").build()));
         transactionHelper.transaction(() -> categoryDAO.create(Category.builder().categoryName("Двери").build()));
 
-        
-        
+
         ProductDAO productDAO = new ProductDAOImpl(transactionHelper);
         Category category = categoryDAO.get(2L);
-       
 
-        
 
         IntStream.range(0, 120)
-                .forEach(i->{
+                .forEach(i -> {
                     Runnable runnable = () -> {
                         Product product1 = Product.builder()
-                                .price(19329.9+i*10)
+                                .price(19329.9 + i * 10)
                                 .name("Стул белый " + i)
                                 .categoryId(category)
                                 .description("Loreal parisssssh aga net no da disc est okey da nado bolshe")
@@ -64,7 +61,6 @@ public class Runner {
                     };
                     transactionHelper.transaction(runnable);
                 });
-
 
 
         RoleDAO roleDAO = new RoleDAOImpl(transactionHelper);

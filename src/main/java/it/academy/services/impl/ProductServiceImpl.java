@@ -76,11 +76,11 @@ public class ProductServiceImpl implements ProductService {
 
     public void deleteProduct(@NonNull Long id) {
         Runnable runnable = () -> {
-            Optional.of(orderItemDAO.existByProductId(id)).filter(p->p.equals(Boolean.FALSE))
+            Optional.of(orderItemDAO.existByProductId(id)).filter(p -> p.equals(Boolean.FALSE))
                     .orElseThrow(ProductUsedInOrdersException::new);
             try {
                 productDAO.delete(id);
-            }catch (NotFoundException e){
+            } catch (NotFoundException e) {
                 throw new ProductNotFoundException();
             }
         };

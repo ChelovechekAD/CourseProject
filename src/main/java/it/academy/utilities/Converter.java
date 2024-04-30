@@ -21,6 +21,7 @@ public class Converter {
                 .imageLink(productDTO.getImageLink())
                 .build();
     }
+
     public static Product convertUpdateProdDTOToEntity(UpdateProductDTO productDTO) {
         return Product.builder()
                 .id(productDTO.getId())

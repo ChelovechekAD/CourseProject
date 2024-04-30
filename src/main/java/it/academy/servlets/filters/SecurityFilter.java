@@ -43,7 +43,7 @@ public class SecurityFilter extends HttpFilter {
             CommandEnum.GET_USER_ORDERS,
             CommandEnum.POST_DELETE_USER,
             CommandEnum.GET_USER
-            );
+    );
 
     private final List<CommandEnum> adminAvailableRoutes = List.of(
             CommandEnum.GET_ORDERS_PAGE,
@@ -54,7 +54,7 @@ public class SecurityFilter extends HttpFilter {
             CommandEnum.POST_ADD_PRODUCT,
             CommandEnum.POST_DELETE_PRODUCT,
             CommandEnum.POST_DELETE_CATEGORY
-            );
+    );
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
@@ -95,7 +95,7 @@ public class SecurityFilter extends HttpFilter {
         chain.doFilter(req, res);
     }
 
-    private List<RoleEnum> getUserRoles(HttpServletRequest request){
+    private List<RoleEnum> getUserRoles(HttpServletRequest request) {
         String token = request.getHeader(Constants.AUTHORIZATION);
         if (token == null || !token.startsWith(Constants.TOKEN_PATTERN)) {
             throw new UnauthorizedException();

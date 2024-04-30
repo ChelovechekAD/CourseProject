@@ -12,5 +12,6 @@ public interface CategoryService {
     CategoryDTO getCategoryByName(@NonNull String name);
 
     CategoriesDTO getAllCategories();
+
     void deleteCategory(@NonNull Long categoryId, @NonNull Boolean root);
 }

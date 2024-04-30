@@ -20,7 +20,6 @@ import it.academy.utilities.TransactionHelper;
 import lombok.NonNull;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -101,6 +100,7 @@ public class OrderServiceImpl implements OrderService {
         };
         return transactionHelper.transaction(supplier);
     }
+
     public OrdersDTO getListOfUserOrders(@NonNull GetUserOrderPageDTO dto) {
         Supplier<OrdersDTO> supplier = () -> {
 

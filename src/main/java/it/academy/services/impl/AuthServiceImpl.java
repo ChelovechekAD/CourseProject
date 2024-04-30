@@ -1,6 +1,5 @@
 package it.academy.services.impl;
 
-import it.academy.сomponents.JwtProvider;
 import it.academy.DAO.RefreshTokenDAO;
 import it.academy.DAO.RoleDAO;
 import it.academy.DAO.UserDAO;
@@ -18,6 +17,7 @@ import it.academy.models.User;
 import it.academy.services.AuthService;
 import it.academy.utilities.Converter;
 import it.academy.utilities.TransactionHelper;
+import it.academy.сomponents.JwtProvider;
 import lombok.NonNull;
 import org.mindrot.jbcrypt.BCrypt;
 
