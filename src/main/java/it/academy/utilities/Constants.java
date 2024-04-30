@@ -82,5 +82,11 @@ public class Constants {
     public static final int LENGTH_OF_BEARER_PART = 7;
     public static final int MULTI_TIME = 60;
     public static final String SQL_INSERT_PARAM_SIGN = ":";
-    public static final String PRODUCT_ID_PARAM_KEY = "product_id";
+    public static final String PRODUCT_ID_PARAM_KEY = "productId";
+    public static final String CATEGORY_PRODUCT_EXIST_EXCEPTION_MESSAGE = "Products with this category exist! You need to use root flag to delete all!";
+    public static final String ROOT_PARAM_KEY = "root";
+    public static final String CATEGORY_NAME_PARAM_KEY = "categoryName";
+    public static final String CATEGORY_ALREADY_EXIST_EXCEPTION_MESSAGE = "Category already exist!";
+    public static final String THIS_PRODUCT_ALREADY_USED_IN_ORDER_S = "This product already used in order(s)";
+    public static final String EXIST_EXCEPTION_MESSAGE = "Item already exist!";
 }

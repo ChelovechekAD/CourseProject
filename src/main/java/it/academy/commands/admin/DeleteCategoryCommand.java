@@ -11,14 +11,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
-public class AddCategoryCommand implements Command {
+public class DeleteCategoryCommand implements Command {
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String req = request.getReader().lines().collect(Collectors.joining());
-        String categoryName = Extractor
-                .extractSingleParamFromRequestBody(req, Constants.CATEGORY_NAME_PARAM_KEY, String.class);
+        Long categoryId = Extractor.extractSingleParamFromRequestBody(req, Constants.CATEGORY_ID_PARAM_KEY, Long.class);
+        Boolean root = Extractor.extractSingleParamFromRequestBody(req, Constants.ROOT_PARAM_KEY, Boolean.class);
         CategoryService categoryService = new CategoryServiceImpl();
-        categoryService.addCategory(categoryName);
+        categoryService.deleteCategory(categoryId, root);
     }
 }

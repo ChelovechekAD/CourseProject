@@ -3,6 +3,7 @@ package it.academy.services;
 import it.academy.DTO.request.CreateProductDTO;
 import it.academy.DTO.request.GetProductPageByCategoryDTO;
 import it.academy.DTO.request.RequestDataDetailsDTO;
+import it.academy.DTO.request.UpdateProductDTO;
 import it.academy.DTO.response.ProductDTO;
 import it.academy.DTO.response.ProductsDTO;
 import lombok.NonNull;
@@ -12,7 +13,7 @@ import java.util.Map;
 public interface ProductService {
     void addProduct(@NonNull CreateProductDTO createProductDTO);
 
-    void updateProduct(@NonNull CreateProductDTO createProductDTO);
+    void updateProduct(@NonNull UpdateProductDTO updateProductDTO);
 
     void deleteProduct(@NonNull Long id);
 

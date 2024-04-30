@@ -21,6 +21,7 @@ public class OrderDAOImpl extends DAOImpl<Order, Long> implements OrderDAO {
         super(Order.class, transactionHelper);
     }
 
+
     @Override
     public List<Order> getUserOrders(Integer pageNum, Integer countPerPage, Long userId) {
         CriteriaBuilder cb = transactionHelper.criteriaBuilder();

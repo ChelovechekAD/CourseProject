@@ -14,6 +14,15 @@ public class Converter {
 
     public static Product convertCreateProdDTOToEntity(CreateProductDTO productDTO) {
         return Product.builder()
+                .categoryId(null)
+                .description(productDTO.getDescription())
+                .price(productDTO.getPrice())
+                .name(productDTO.getName())
+                .imageLink(productDTO.getImageLink())
+                .build();
+    }
+    public static Product convertUpdateProdDTOToEntity(UpdateProductDTO productDTO) {
+        return Product.builder()
                 .id(productDTO.getId())
                 .categoryId(null)
                 .description(productDTO.getDescription())

@@ -24,19 +24,26 @@ public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(nullable = false)
     private String name;
+
     @Column(nullable = false)
     private String surname;
+
     @Column(nullable = false)
     private String email;
+
     @Column(nullable = false)
     private String password;
+
     @Column
     @Embedded
     private Address address;
+
     @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
+
     @Column(name = "roles", nullable = false)
     @ManyToMany
     @JoinTable(name = "role_user",

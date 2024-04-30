@@ -1,6 +1,6 @@
 package it.academy.servlets.filters;
 
-import it.academy.exceptions.RequestParamInvalidException;
+import it.academy.exceptions.*;
 import it.academy.utilities.Constants;
 import it.academy.utilities.ResponseHelper;
 import jakarta.servlet.FilterChain;
@@ -11,6 +11,7 @@ import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.http.HttpStatus;
 
 import java.io.IOException;
 
@@ -24,9 +25,13 @@ public class ExceptionHandlerFilter extends HttpFilter {
 
         try {
             chain.doFilter(req, res);
-        } catch (RequestParamInvalidException e) {
-            e.printStackTrace();
-            ResponseHelper.sendResponseWithStatus(httpResponse, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+        } catch (NotFoundException e) {
+            ResponseHelper.sendResponseWithStatus(httpResponse, HttpStatus.SC_NOT_FOUND, e.getMessage());
+        } catch (ExistException | CategoryDeleteException | ProductUsedInOrdersException e) {
+            ResponseHelper.sendResponseWithStatus(httpResponse, HttpStatus.SC_CONFLICT, e.getMessage());
+        } catch (PasswordMatchException | RefreshTokenInvalidException | RequestParamInvalidException |
+                 WrongPasswordException e) {
+            ResponseHelper.sendResponseWithStatus(httpResponse, HttpStatus.SC_BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
             ResponseHelper.sendResponseWithStatus(httpResponse,

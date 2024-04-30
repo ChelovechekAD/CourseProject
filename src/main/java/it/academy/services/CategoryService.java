@@ -5,12 +5,12 @@ import it.academy.DTO.response.CategoriesDTO;
 import lombok.NonNull;
 
 public interface CategoryService {
-    void addCategory(@NonNull CategoryDTO categoryDTO);
+    void addCategory(@NonNull String categoryName);
 
     CategoryDTO getCategoryById(@NonNull Long id);
 
     CategoryDTO getCategoryByName(@NonNull String name);
 
     CategoriesDTO getAllCategories();
-    void deleteCategory(@NonNull Long categoryId);
+    void deleteCategory(@NonNull Long categoryId, @NonNull Boolean root);
 }

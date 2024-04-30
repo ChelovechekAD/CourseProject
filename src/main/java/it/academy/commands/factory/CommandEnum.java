@@ -2,9 +2,7 @@ package it.academy.commands.factory;
 
 
 import it.academy.commands.Command;
-import it.academy.commands.admin.ChangeOrderStatusCommand;
-import it.academy.commands.admin.GetAllOrdersPageCommand;
-import it.academy.commands.admin.GetAllUsersCommand;
+import it.academy.commands.admin.*;
 import it.academy.commands.catalog.*;
 import it.academy.commands.login.LoginCommand;
 import it.academy.commands.login.LogoutCommand;
@@ -41,7 +39,11 @@ public enum CommandEnum {
     POST_CHANGE_ORDER_STATUS(new ChangeOrderStatusCommand()),
     POST_DELETE_USER(new DeleteUserCommand()),
     GET_ALL_USERS(new GetAllUsersCommand()),
-    GET_USER(new GetUserCommand());
+    GET_USER(new GetUserCommand()),
+    POST_ADD_CATEGORY(new AddCategoryCommand()),
+    POST_DELETE_CATEGORY(new DeleteCategoryCommand()),
+    POST_ADD_PRODUCT(new AddProductCommand()),
+    POST_DELETE_PRODUCT(new DeleteProductCommand());
 
     private final Command command;
 

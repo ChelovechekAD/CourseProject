@@ -3,7 +3,6 @@ package it.academy.commands.user;
 import it.academy.DTO.request.GetOrderItemsDTO;
 import it.academy.DTO.response.OrderItemsDTO;
 import it.academy.commands.Command;
-import it.academy.exceptions.OrderNotFoundException;
 import it.academy.services.OrderService;
 import it.academy.services.impl.OrderServiceImpl;
 import it.academy.utilities.Extractor;
@@ -19,14 +18,10 @@ public class GetOrderItemsCommand implements Command {
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        try {
-            GetOrderItemsDTO getOrderItemsDTO = Extractor.extractDTOFromRequest(request, new GetOrderItemsDTO());
-            OrderService orderService = new OrderServiceImpl();
-            OrderItemsDTO dto = orderService.getOrderItems(getOrderItemsDTO);
-            String resp = GSON.toJson(dto);
-            ResponseHelper.sendJsonResponse(response, resp);
-        } catch (OrderNotFoundException e) {
-            ResponseHelper.sendResponseWithStatus(response, HttpServletResponse.SC_NOT_FOUND, e.getMessage());
-        }
+        GetOrderItemsDTO getOrderItemsDTO = Extractor.extractDTOFromRequest(request, new GetOrderItemsDTO());
+        OrderService orderService = new OrderServiceImpl();
+        OrderItemsDTO dto = orderService.getOrderItems(getOrderItemsDTO);
+        String resp = GSON.toJson(dto);
+        ResponseHelper.sendJsonResponse(response, resp);
     }
 }

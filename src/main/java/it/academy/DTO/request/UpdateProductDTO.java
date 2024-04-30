@@ -11,8 +11,9 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CreateProductDTO implements Serializable {
+public class UpdateProductDTO implements Serializable {
 
+    private Long id;
     private Long categoryId;
     private String name;
     private String description;

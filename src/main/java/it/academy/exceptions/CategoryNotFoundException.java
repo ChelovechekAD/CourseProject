@@ -2,9 +2,9 @@ package it.academy.exceptions;
 
 import it.academy.utilities.Constants;
 
-public class CatalogNotFoundException extends NotFoundException {
+public class CategoryNotFoundException extends NotFoundException {
 
-    public CatalogNotFoundException() {
+    public CategoryNotFoundException() {
         super(Constants.REQUESTED_CATALOG_NOT_EXIST);
     }
 

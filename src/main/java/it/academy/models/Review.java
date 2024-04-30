@@ -22,8 +22,10 @@ public class Review implements Serializable {
 
     @EmbeddedId
     private ReviewPK reviewPK;
+
     @Column(nullable = false)
     private Double rating;
+
     @Column(length = 500)
     private String description;
 

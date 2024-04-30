@@ -20,6 +20,7 @@ public class Role implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Short id;
+
     @Enumerated(EnumType.STRING)
     @Column
     private RoleEnum role;

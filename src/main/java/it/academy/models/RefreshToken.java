@@ -22,6 +22,7 @@ public class RefreshToken implements Serializable {
 
     @Column(name = "refresh_token", unique = true, nullable = false)
     private String refreshToken;
+
     @Column(name = "user_email", unique = true, nullable = false)
     private String userEmail;
 

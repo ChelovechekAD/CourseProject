@@ -22,10 +22,10 @@ public class OrderItem implements Serializable {
 
     @EmbeddedId
     private OrderItemPK orderItemPK;
+
     @Column(nullable = false)
     private Long count;
+
     @Column(nullable = false)
     private Double price;
-
-
 }

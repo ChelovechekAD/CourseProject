@@ -1,26 +1,22 @@
-package it.academy.commands.catalog;
+package it.academy.commands.admin;
 
-import it.academy.DTO.response.ProductDTO;
 import it.academy.commands.Command;
 import it.academy.services.ProductService;
 import it.academy.services.impl.ProductServiceImpl;
 import it.academy.utilities.Constants;
 import it.academy.utilities.Extractor;
-import it.academy.utilities.ResponseHelper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.stream.Collectors;
 
-import static it.academy.utilities.Constants.GSON;
-
-public class GetProductPageCommand implements Command {
-
+public class DeleteProductCommand implements Command {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Long productId = Extractor.extractSingleParamFromRequest(request, Constants.PRODUCT_ID_PARAM_KEY, Long.class);
+        String req = request.getReader().lines().collect(Collectors.joining());
+        Long productId = Extractor.extractSingleParamFromRequestBody(req, Constants.PRODUCT_ID_PARAM_KEY, Long.class);
         ProductService productService = new ProductServiceImpl();
-        ProductDTO dto = productService.getProductById(productId);
-        ResponseHelper.sendJsonResponse(response, GSON.toJson(dto));
+        productService.deleteProduct(productId);
     }
 }

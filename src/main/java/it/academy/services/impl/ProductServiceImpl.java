@@ -1,17 +1,21 @@
 package it.academy.services.impl;
 
 import it.academy.DAO.CategoryDAO;
+import it.academy.DAO.OrderItemDAO;
 import it.academy.DAO.ProductDAO;
 import it.academy.DAO.impl.CategoryDAOImpl;
+import it.academy.DAO.impl.OrderItemDAOImpl;
 import it.academy.DAO.impl.ProductDAOImpl;
 import it.academy.DTO.request.CreateProductDTO;
 import it.academy.DTO.request.GetProductPageByCategoryDTO;
 import it.academy.DTO.request.RequestDataDetailsDTO;
+import it.academy.DTO.request.UpdateProductDTO;
 import it.academy.DTO.response.ProductDTO;
 import it.academy.DTO.response.ProductsDTO;
-import it.academy.exceptions.CatalogNotFoundException;
+import it.academy.exceptions.CategoryNotFoundException;
 import it.academy.exceptions.NotFoundException;
 import it.academy.exceptions.ProductNotFoundException;
+import it.academy.exceptions.ProductUsedInOrdersException;
 import it.academy.models.Category;
 import it.academy.models.Category_;
 import it.academy.models.Product;
@@ -25,18 +29,21 @@ import lombok.NonNull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class ProductServiceImpl implements ProductService {
 
     private final ProductDAO productDAO;
     private final CategoryDAO categoryDAO;
+    private final OrderItemDAO orderItemDAO;
     private final TransactionHelper transactionHelper;
 
     public ProductServiceImpl() {
         transactionHelper = new TransactionHelper();
         productDAO = new ProductDAOImpl(transactionHelper);
         categoryDAO = new CategoryDAOImpl(transactionHelper);
+        orderItemDAO = new OrderItemDAOImpl(transactionHelper);
 
     }
 
@@ -44,7 +51,7 @@ public class ProductServiceImpl implements ProductService {
         Runnable method = () -> {
             Category category = categoryDAO.get(createProductDTO.getCategoryId());
             if (category == null) {
-                throw new CatalogNotFoundException();
+                throw new CategoryNotFoundException();
             }
             Product product = Converter.convertCreateProdDTOToEntity(createProductDTO);
             product.setCategoryId(category);
@@ -53,28 +60,32 @@ public class ProductServiceImpl implements ProductService {
         transactionHelper.transaction(method);
     }
 
-    public void updateProduct(@NonNull CreateProductDTO createProductDTO) {
+    public void updateProduct(@NonNull UpdateProductDTO updateProdDTO) {
         Runnable method = () -> {
-            if (categoryDAO.get(createProductDTO.getCategoryId()) == null) {
-                throw new CatalogNotFoundException();
+            if (categoryDAO.get(updateProdDTO.getCategoryId()) == null) {
+                throw new CategoryNotFoundException();
             }
-            if (createProductDTO.getId() == 0 || productDAO.get(createProductDTO.getId()) == null) {
+            if (updateProdDTO.getId() == 0 || productDAO.get(updateProdDTO.getId()) == null) {
                 throw new ProductNotFoundException();
             }
-            Product product = Converter.convertCreateProdDTOToEntity(createProductDTO);
+            Product product = Converter.convertUpdateProdDTOToEntity(updateProdDTO);
             productDAO.update(product);
         };
         transactionHelper.transaction(method);
     }
 
     public void deleteProduct(@NonNull Long id) {
-        try {
-            transactionHelper.transaction(() -> productDAO.delete(id));
-        } catch (NotFoundException e) {
-            ProductNotFoundException productNotFoundException = new ProductNotFoundException();
-            productNotFoundException.setStackTrace(e.getStackTrace());
-            throw productNotFoundException;
-        }
+        Runnable runnable = () -> {
+            Optional.of(orderItemDAO.existByProductId(id)).filter(p->p.equals(Boolean.FALSE))
+                    .orElseThrow(ProductUsedInOrdersException::new);
+            try {
+                productDAO.delete(id);
+            }catch (NotFoundException e){
+                throw new ProductNotFoundException();
+            }
+        };
+        transactionHelper.transaction(runnable);
+
     }
 
     public ProductDTO getProductById(@NonNull Long id) {

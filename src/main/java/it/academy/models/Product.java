@@ -19,17 +19,24 @@ public class Product implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne
     @JoinColumn(nullable = false, name = "category_id")
     private Category categoryId;
+
     @Column(nullable = false)
     private String name;
+
     @Column(nullable = false)
-    private Double rating;
+    @Builder.Default
+    private Double rating = 0d;
+
     @Column(length = 1500, nullable = false)
     private String description;
+
     @Column(nullable = false)
     private Double price;
+
     @Column(name = "image_link")
     private String imageLink;
 

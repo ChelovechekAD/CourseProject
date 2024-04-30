@@ -11,4 +11,7 @@ public interface OrderItemDAO extends DAO<OrderItem, OrderItemPK> {
 
     List<OrderItem> getOrderItemsPageByOrderId(Long orderId, Integer pageNum, Integer countPerPage);
 
+    boolean existByProductId(Long productId);
+
+
 }
