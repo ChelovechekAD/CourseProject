@@ -1,4 +1,4 @@
-package it.academy.сomponents;
+package it.academy.components;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;

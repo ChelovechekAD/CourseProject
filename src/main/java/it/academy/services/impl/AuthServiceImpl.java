@@ -17,7 +17,7 @@ import it.academy.models.User;
 import it.academy.services.AuthService;
 import it.academy.utilities.Converter;
 import it.academy.utilities.TransactionHelper;
-import it.academy.сomponents.JwtProvider;
+import it.academy.components.JwtProvider;
 import lombok.NonNull;
 import org.mindrot.jbcrypt.BCrypt;
 

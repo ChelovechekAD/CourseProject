@@ -8,7 +8,7 @@ import it.academy.exceptions.UnauthorizedException;
 import it.academy.models.Role;
 import it.academy.utilities.Constants;
 import it.academy.utilities.ResponseHelper;
-import it.academy.сomponents.JwtProvider;
+import it.academy.components.JwtProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
