@@ -22,6 +22,7 @@ import lombok.NonNull;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class AuthServiceImpl implements AuthService {
@@ -46,9 +47,9 @@ public class AuthServiceImpl implements AuthService {
             if (!Objects.equals(regUserDTO.getPassword(), regUserDTO.getPasswordConfirm())) {
                 throw new PasswordMatchException();
             }
-            if (userDAO.existUserByEmail(regUserDTO.getEmail())) {
-                throw new UserExistException();
-            }
+            Optional.of(userDAO.existUserByEmail(regUserDTO.getEmail()))
+                    .filter(p -> p.equals(Boolean.FALSE))
+                    .orElseThrow(UserExistException::new);
             User user = Converter.convertRegUserDTOToEntity(regUserDTO);
             Role role = roleDAO.getByRoleName(RoleEnum.DEFAULT_USER);
             user.getRoleSet().add(role);
@@ -61,13 +62,13 @@ public class AuthServiceImpl implements AuthService {
 
     public LoginUserJwtDTO loginUser(@NonNull LoginUserDTO loginUserDTO) {
         Supplier<LoginUserJwtDTO> supplier = () -> {
-            if (!userDAO.existUserByEmail(loginUserDTO.getEmail())) {
-                throw new UserNotFoundException();
-            }
+            Optional.of(userDAO.existUserByEmail(loginUserDTO.getEmail()))
+                    .filter(p -> p.equals(Boolean.TRUE))
+                    .orElseThrow(UserNotFoundException::new);
             User user = userDAO.getUserByEmail(loginUserDTO.getEmail());
-            if (!BCrypt.checkpw(loginUserDTO.getPassword(), user.getPassword())) {
-                throw new WrongPasswordException();
-            }
+            Optional.of(BCrypt.checkpw(loginUserDTO.getPassword(), user.getPassword()))
+                    .filter(p -> p.equals(Boolean.TRUE))
+                    .orElseThrow(WrongPasswordException::new);
             LoginUserJwtDTO loginUserJwtDTO = getPairOfTokens(user);
             loginUserJwtDTO.setUserDTO(Converter.convertUserEntityToDTO(user));
             saveToken(loginUserJwtDTO.getRefreshToken()).run();
@@ -103,16 +104,16 @@ public class AuthServiceImpl implements AuthService {
 
     private Supplier<LoginUserJwtDTO> updateTokens(@NonNull String refreshToken) {
         return () -> {
-            if (!jwtProvider.validateRefreshToken(refreshToken)) {
-                throw new RefreshTokenInvalidException();
-            }
+            Optional.of(jwtProvider.validateRefreshToken(refreshToken))
+                    .filter(p->p.equals(Boolean.TRUE))
+                    .orElseThrow(RefreshTokenInvalidException::new);
             String email = jwtProvider.getRefreshClaims(refreshToken).getSubject();
-            if (!userDAO.existUserByEmail(email)) {
-                throw new UserNotFoundException();
-            }
-            if (!refreshTokenDAO.existTokenByEmail(email)) {
-                throw new TokenNotFound();
-            }
+            Optional.of(userDAO.existUserByEmail(email))
+                    .filter(p->p.equals(Boolean.TRUE))
+                    .orElseThrow(UserNotFoundException::new);
+            Optional.of(refreshTokenDAO.existTokenByEmail(email))
+                    .filter(p->p.equals(Boolean.TRUE))
+                    .orElseThrow(TokenNotFound::new);
             User user = userDAO.getUserByEmail(email);
             RefreshToken refreshToken1 = refreshTokenDAO.getTokenByEmail(email);
             LoginUserJwtDTO loginUserJwtDTO = getPairOfTokens(user);

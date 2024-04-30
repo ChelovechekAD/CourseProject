@@ -25,6 +25,7 @@ import jakarta.persistence.criteria.Root;
 import lombok.NonNull;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class ReviewServiceImpl implements ReviewService {
@@ -48,9 +49,7 @@ public class ReviewServiceImpl implements ReviewService {
             User user = userDAO.get(createReviewDTO.getUserId());
             validateReviewPK(user, product);
             ReviewPK reviewPK = new ReviewPK(user, product);
-            if (reviewDAO.get(reviewPK) != null) {
-                throw new ReviewExistException();
-            }
+            Optional.ofNullable(reviewDAO.get(reviewPK)).ifPresent(p->{throw new ReviewExistException();});
             Review review = Review.builder()
                     .rating(createReviewDTO.getRating())
                     .reviewPK(reviewPK)
@@ -70,9 +69,7 @@ public class ReviewServiceImpl implements ReviewService {
             validateReviewPK(user, product);
             ReviewPK reviewPK = new ReviewPK(user, product);
             Review review = reviewDAO.get(reviewPK);
-            if (review == null) {
-                throw new ReviewNotFoundException();
-            }
+            Optional.ofNullable(review).orElseThrow(ReviewNotFoundException::new);
             return Converter.convertReviewEntityToDTO(review);
         };
         return transactionHelper.transaction(supplier);
@@ -134,20 +131,14 @@ public class ReviewServiceImpl implements ReviewService {
         query.select(criteriaBuilder.avg(root.get(Review_.RATING)))
                 .where(criteriaBuilder.equal(root.get(Review_.REVIEW_PK).get(ReviewPK_.PRODUCT_ID), product));
         Double newRating = transactionHelper.entityManager().createQuery(query).getSingleResult();
-        if (newRating == null) {
-            newRating = 0d;
-        }
+        newRating = Optional.ofNullable(newRating).orElse(0d);
         product.setRating(newRating);
         productDAO.update(product);
     }
 
     private void validateReviewPK(User user, Product product) {
-        if (product == null) {
-            throw new ProductNotFoundException();
-        }
-        if (user == null) {
-            throw new UserNotFoundException();
-        }
+        Optional.ofNullable(product).orElseThrow(ProductNotFoundException::new);
+        Optional.ofNullable(user).orElseThrow(UserNotFoundException::new);
     }
 
 }

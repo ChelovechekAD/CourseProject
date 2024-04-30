@@ -14,6 +14,7 @@ import it.academy.utilities.TransactionHelper;
 import lombok.NonNull;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -34,9 +35,7 @@ public class UserServiceImpl implements UserService {
     public void updateUser(@NonNull UpdateUserDTO dto) {
         Runnable supplier = () -> {
             User user = userDAO.get(dto.getId());
-            if (user == null) {
-                throw new UserNotFoundException();
-            }
+            Optional.ofNullable(user).orElseThrow(UserNotFoundException::new);
             Converter.updateUserByDTO(user, dto);
         };
         transactionHelper.transaction(supplier);
@@ -46,9 +45,7 @@ public class UserServiceImpl implements UserService {
     public UserDTO getUserById(@NonNull Long id) {
         Supplier<UserDTO> supplier = () -> {
             User user = userDAO.get(id);
-            if (user == null) {
-                throw new UserNotFoundException();
-            }
+            Optional.ofNullable(user).orElseThrow(UserNotFoundException::new);
             return Converter.convertUserEntityToDTO(user);
         };
         return transactionHelper.transaction(supplier);

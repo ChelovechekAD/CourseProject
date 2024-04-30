@@ -21,6 +21,7 @@ import it.academy.utilities.TransactionHelper;
 import lombok.NonNull;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class CartServiceImpl implements CartService {
@@ -43,10 +44,7 @@ public class CartServiceImpl implements CartService {
             User user = userDAO.get(dto.getUserId());
             validateCartItemPK(user, product);
             CartItemPK cartItemPK = new CartItemPK(user, product);
-            if (cartItemDAO.get(cartItemPK) != null) {
-                throw new CartItemExistException();
-            }
-
+            Optional.ofNullable(cartItemDAO.get(cartItemPK)).ifPresent(p -> {throw new CartItemExistException();});
             CartItem cartItem = CartItem.builder()
                     .cartItemPK(cartItemPK)
                     .quantity(dto.getQuantity())
@@ -79,9 +77,7 @@ public class CartServiceImpl implements CartService {
             validateCartItemPK(user, product);
             CartItemPK cartItemPK = new CartItemPK(user, product);
             CartItem cartItem = cartItemDAO.get(cartItemPK);
-            if (cartItem == null) {
-                throw new CartItemNotFoundException();
-            }
+            Optional.ofNullable(cartItem).orElseThrow(CartItemNotFoundException::new);
             cartItem.setQuantity(dto.getQuantity());
             cartItemDAO.update(cartItem);
         };
@@ -91,9 +87,7 @@ public class CartServiceImpl implements CartService {
     public CartItemsDTO getAllCartByUserId(@NonNull Long userId) {
         Supplier<CartItemsDTO> supplier = () -> {
             User user = userDAO.get(userId);
-            if (user == null) {
-                throw new UserNotFoundException();
-            }
+            Optional.ofNullable(user).orElseThrow(UserNotFoundException::new);
             List<CartItem> cartItems = cartItemDAO.getAllByUserId(userId);
             return Converter.convertCartItemEntitiesToDTO(cartItems);
         };
@@ -101,11 +95,7 @@ public class CartServiceImpl implements CartService {
     }
 
     private void validateCartItemPK(User user, Product product) {
-        if (product == null) {
-            throw new ProductNotFoundException();
-        }
-        if (user == null) {
-            throw new UserNotFoundException();
-        }
+        Optional.ofNullable(product).orElseThrow(ProductNotFoundException::new);
+        Optional.ofNullable(user).orElseThrow(UserNotFoundException::new);
     }
 }

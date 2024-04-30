@@ -20,6 +20,7 @@ import it.academy.utilities.TransactionHelper;
 import lombok.NonNull;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -44,9 +45,7 @@ public class OrderServiceImpl implements OrderService {
     public void createOrder(@NonNull CreateOrderDTO createOrderDTO) {
         Runnable orderSupplier = () -> {
             User user = userDAO.get(createOrderDTO.getUserId());
-            if (user == null) {
-                throw new UserNotFoundException();
-            }
+            Optional.ofNullable(user).orElseThrow(UserNotFoundException::new);
             Order order = Order.builder()
                     .userId(user)
                     .build();
@@ -54,9 +53,7 @@ public class OrderServiceImpl implements OrderService {
             List<OrderItem> orderItemList = createOrderDTO.getOrderItems().stream()
                     .map(orderItemDTO -> {
                         Product product = productDAO.get(orderItemDTO.getProductId());
-                        if (product == null) {
-                            throw new ProductNotFoundException();
-                        }
+                        Optional.ofNullable(product).orElseThrow(ProductNotFoundException::new);
                         OrderItem orderItem = Converter.convertOrderItemDTOToEntity(orderItemDTO);
                         orderItem.setOrderItemPK(
                                 OrderItemPK.builder()
@@ -76,9 +73,7 @@ public class OrderServiceImpl implements OrderService {
         Runnable supplier = () -> {
             OrderStatus status = dto.getOrderStatus();
             Order order = orderDAO.get(dto.getOrderId());
-            if (order == null) {
-                throw new OrderNotFoundException();
-            }
+            Optional.ofNullable(order).orElseThrow(OrderNotFoundException::new);
             order.setOrderStatus(status);
         };
         transactionHelper.transaction(supplier);
@@ -111,19 +106,13 @@ public class OrderServiceImpl implements OrderService {
             Long count = orderDAO.countOfUserOrders(dto.getUserId());
             return new OrdersDTO(orderDTOList, count);
         };
-
-        if (userDAO.get(dto.getUserId()) == null) {
-            throw new UserNotFoundException();
-        }
+        Optional.ofNullable(userDAO.get(dto.getUserId())).orElseThrow(UserNotFoundException::new);
         return transactionHelper.transaction(supplier);
     }
 
     public OrderItemsDTO getOrderItems(@NonNull GetOrderItemsDTO dto) {
         Supplier<OrderItemsDTO> supplier = () -> {
-            if (orderDAO.get(dto.getOrderId()) == null) {
-                throw new OrderNotFoundException();
-            }
-
+            Optional.ofNullable(orderDAO.get(dto.getOrderId())).orElseThrow(OrderNotFoundException::new);
             List<OrderItem> orderItemList = orderItemDAO
                     .getOrderItemsPageByOrderId(dto.getOrderId(), dto.getPageNum(), dto.getCountPerPage());
             Long count = orderItemDAO.getCountOfByOrderId(dto.getOrderId());
@@ -155,9 +144,7 @@ public class OrderServiceImpl implements OrderService {
             Product product = productDAO.get(orderItemDTO.getProductId());
             validateOnExist(order, product);
             OrderItemPK pk = new OrderItemPK(order, product);
-            if (orderItemDAO.get(pk) == null) {
-                throw new OrderItemNotFoundException();
-            }
+            Optional.ofNullable(orderItemDAO.get(pk)).orElseThrow(OrderItemNotFoundException::new);
             OrderItem orderItem = Converter.convertOrderItemDTOToEntity(orderItemDTO);
             orderItem.setOrderItemPK(new OrderItemPK(order, product));
             orderItemDAO.update(orderItem);
@@ -171,9 +158,7 @@ public class OrderServiceImpl implements OrderService {
             Product product = productDAO.get(orderItemDTO.getProductId());
             validateOnExist(order, product);
             OrderItemPK pk = new OrderItemPK(order, product);
-            if (orderItemDAO.get(pk) != null) {
-                throw new OrderItemExistException();
-            }
+            Optional.ofNullable(orderItemDAO.get(pk)).ifPresent(p -> {throw new OrderItemExistException();});
             OrderItem orderItem = Converter.convertOrderItemDTOToEntity(orderItemDTO);
             orderItem.setOrderItemPK(new OrderItemPK(order, product));
             orderItemDAO.create(orderItem);
@@ -182,11 +167,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private void validateOnExist(Order order, Product product) {
-        if (order == null) {
-            throw new OrderNotFoundException();
-        }
-        if (product == null) {
-            throw new ProductNotFoundException();
-        }
+        Optional.ofNullable(order).orElseThrow(OrderNotFoundException::new);
+        Optional.ofNullable(product).orElseThrow(ProductNotFoundException::new);
     }
 }

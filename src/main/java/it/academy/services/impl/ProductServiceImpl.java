@@ -50,9 +50,7 @@ public class ProductServiceImpl implements ProductService {
     public void addProduct(@NonNull CreateProductDTO createProductDTO) {
         Runnable method = () -> {
             Category category = categoryDAO.get(createProductDTO.getCategoryId());
-            if (category == null) {
-                throw new CategoryNotFoundException();
-            }
+            Optional.ofNullable(category).orElseThrow(CategoryNotFoundException::new);
             Product product = Converter.convertCreateProdDTOToEntity(createProductDTO);
             product.setCategoryId(category);
             productDAO.create(product);
@@ -62,9 +60,7 @@ public class ProductServiceImpl implements ProductService {
 
     public void updateProduct(@NonNull UpdateProductDTO updateProdDTO) {
         Runnable method = () -> {
-            if (categoryDAO.get(updateProdDTO.getCategoryId()) == null) {
-                throw new CategoryNotFoundException();
-            }
+            Optional.ofNullable(categoryDAO.get(updateProdDTO.getCategoryId())).orElseThrow(CategoryNotFoundException::new);
             if (updateProdDTO.getId() == 0 || productDAO.get(updateProdDTO.getId()) == null) {
                 throw new ProductNotFoundException();
             }
@@ -90,9 +86,7 @@ public class ProductServiceImpl implements ProductService {
 
     public ProductDTO getProductById(@NonNull Long id) {
         Product product = productDAO.get(id);
-        if (product == null) {
-            throw new ProductNotFoundException();
-        }
+        Optional.ofNullable(product).orElseThrow(ProductNotFoundException::new);
         return Converter.convertProdEntityToDTO(product);
     }
 
@@ -142,12 +136,12 @@ public class ProductServiceImpl implements ProductService {
             Root<Product> root = productQuery.from(Product.class);
             Map<String, Object> catParams = new HashMap<>();
             Predicate predicate = builder.conjunction();
-            if (paramMap.get(Category_.CATEGORY_NAME) != null) {
-                catParams.put(Category_.CATEGORY_NAME, paramMap.get(Category_.CATEGORY_NAME));
+            Optional.ofNullable(paramMap.get(Category_.CATEGORY_NAME)).ifPresent(p -> {
+                catParams.put(Category_.CATEGORY_NAME, p);
                 paramMap.remove(Category_.CATEGORY_NAME);
                 Join<Product, Category> categoryJoin = root.join(Product_.CATEGORY_ID);
                 transactionHelper.collectParamsToPredicate(catParams, categoryJoin, predicate);
-            }
+            });
             transactionHelper.collectParamsToPredicate(paramMap, root, builder.conjunction());
             productQuery.select(root)
                     .where(predicate);
