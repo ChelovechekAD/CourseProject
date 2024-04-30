@@ -1,12 +1,14 @@
 package it.academy.servlets.filters;
 
 import io.jsonwebtoken.Claims;
-import it.academy.сomponents.JwtProvider;
 import it.academy.commands.factory.CommandEnum;
 import it.academy.enums.RoleEnum;
+import it.academy.exceptions.AccessDeniedException;
+import it.academy.exceptions.UnauthorizedException;
 import it.academy.models.Role;
 import it.academy.utilities.Constants;
 import it.academy.utilities.ResponseHelper;
+import it.academy.сomponents.JwtProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -28,27 +30,37 @@ import static it.academy.utilities.Constants.GSON;
 public class SecurityFilter extends HttpFilter {
 
     private final List<CommandEnum> userAvailableRoutes = List.of(
-            CommandEnum.GET_ALL_CATEGORIES,
-            CommandEnum.GET_PRODUCTS_PAGE,
-            CommandEnum.GET_CATEGORY_PRODUCTS_PAGE,
             CommandEnum.GET_GET_CART_ITEMS,
             CommandEnum.POST_ADD_CART_ITEM,
             CommandEnum.POST_DELETE_CART_ITEM,
             CommandEnum.GET_GET_CART_ITEMS,
             CommandEnum.POST_UPDATE_USER,
-            CommandEnum.POST_CREATE_ORDER
-
-    );
+            CommandEnum.POST_CREATE_ORDER,
+            CommandEnum.POST_ADD_REVIEW,
+            CommandEnum.POST_DELETE_REVIEW,
+            CommandEnum.GET_USER_REVIEW,
+            CommandEnum.GET_ALL_USER_REVIEWS,
+            CommandEnum.GET_USER_ORDERS,
+            CommandEnum.POST_DELETE_USER,
+            CommandEnum.GET_USER
+            );
 
     private final List<CommandEnum> adminAvailableRoutes = List.of(
             CommandEnum.GET_ORDERS_PAGE,
-            CommandEnum.GET_ORDER_ITEMS
-    );
+            CommandEnum.GET_ORDER_ITEMS,
+            CommandEnum.POST_CHANGE_ORDER_STATUS,
+            CommandEnum.GET_ALL_USERS,
+            CommandEnum.POST_ADD_CATEGORY,
+            CommandEnum.POST_ADD_PRODUCT,
+            CommandEnum.POST_DELETE_PRODUCT,
+            CommandEnum.POST_DELETE_CATEGORY
+            );
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
+
         if (request.getHeader(Constants.CORS_REQUEST_CHECK_HEADER_PARAM) != null) {
             super.doFilter(req, res, chain);
             return;
@@ -68,36 +80,36 @@ public class SecurityFilter extends HttpFilter {
             ResponseHelper.sendResponseWithStatus(response, HttpServletResponse.SC_NOT_FOUND, COMMAND_NOT_FOUND);
             return;
         }
-        if (userAvailableRoutes.contains(commandEnum) || adminAvailableRoutes.contains(commandEnum)) {
-            String token = request.getHeader(Constants.AUTHORIZATION);
-            if (token == null || !token.startsWith(Constants.TOKEN_PATTERN)) {
-                ResponseHelper.sendResponseWithStatus(response, HttpServletResponse.SC_UNAUTHORIZED, Constants.UNAUTHORIZED);
-                return;
-            }
-            token = token.substring(Constants.LENGTH_OF_BEARER_PART);
-            JwtProvider jwtProvider = new JwtProvider();
-            if (!jwtProvider.validateAccessToken(token)) {
-                ResponseHelper.sendResponseWithStatus(response, HttpServletResponse.SC_UNAUTHORIZED, Constants.UNAUTHORIZED);
-                return;
-            }
-            Claims claims = jwtProvider.getAccessClaims(token);
-            @SuppressWarnings("unchecked")
-            ArrayList<Object> roles = (ArrayList<Object>) claims.get(Constants.ROLES_KEY);
-            List<RoleEnum> userRoles = roles.stream()
-                    .map(r -> GSON.fromJson(r.toString(), Role.class).getRole())
-                    .collect(Collectors.toList());
+        if (userAvailableRoutes.contains(commandEnum)) {
+            List<RoleEnum> userRoles = getUserRoles(request);
             if (!userRoles.contains(RoleEnum.DEFAULT_USER)) {
-                ResponseHelper.sendResponseWithStatus(response, HttpServletResponse.SC_FORBIDDEN, Constants.ACCESS_DENIED);
-                return;
+                throw new AccessDeniedException();
             }
-            if (adminAvailableRoutes.contains(commandEnum)) {
-                if (!userRoles.contains(RoleEnum.ADMIN)) {
-                    ResponseHelper.sendResponseWithStatus(response, HttpServletResponse.SC_FORBIDDEN, Constants.ACCESS_DENIED);
-                    return;
-                }
+        } else if (adminAvailableRoutes.contains(commandEnum)) {
+            List<RoleEnum> userRoles = getUserRoles(request);
+            if (!userRoles.contains(RoleEnum.ADMIN)) {
+                throw new AccessDeniedException();
             }
         }
         req.setAttribute(Constants.COMMAND_ENUM, commandEnum);
         chain.doFilter(req, res);
+    }
+
+    private List<RoleEnum> getUserRoles(HttpServletRequest request){
+        String token = request.getHeader(Constants.AUTHORIZATION);
+        if (token == null || !token.startsWith(Constants.TOKEN_PATTERN)) {
+            throw new UnauthorizedException();
+        }
+        token = token.substring(Constants.LENGTH_OF_BEARER_PART);
+        JwtProvider jwtProvider = new JwtProvider();
+        if (!jwtProvider.validateAccessToken(token)) {
+            throw new UnauthorizedException();
+        }
+        Claims claims = jwtProvider.getAccessClaims(token);
+        @SuppressWarnings("unchecked")
+        ArrayList<Object> roles = (ArrayList<Object>) claims.get(Constants.ROLES_KEY);
+        return roles.stream()
+                .map(r -> GSON.fromJson(r.toString(), Role.class).getRole())
+                .collect(Collectors.toList());
     }
 }

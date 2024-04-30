@@ -32,6 +32,10 @@ public class ExceptionHandlerFilter extends HttpFilter {
         } catch (PasswordMatchException | RefreshTokenInvalidException | RequestParamInvalidException |
                  WrongPasswordException e) {
             ResponseHelper.sendResponseWithStatus(httpResponse, HttpStatus.SC_BAD_REQUEST, e.getMessage());
+        } catch (UnauthorizedException e) {
+            ResponseHelper.sendResponseWithStatus(httpResponse, HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
+        } catch (AccessDeniedException e) {
+            ResponseHelper.sendResponseWithStatus(httpResponse, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
             ResponseHelper.sendResponseWithStatus(httpResponse,

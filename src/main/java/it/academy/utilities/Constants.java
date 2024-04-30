@@ -9,8 +9,8 @@ public class Constants {
     //JWT AUTH DATA
     public static final String JWT_ACCESS_SECRET = "gpgdKY9zR4hebFb2wT67AlgsKmbTOmKoyqmGym1dKmM=";
     public static final String JWT_REFRESH_SECRET = "7+bbUaAIaRFDce4rxQLu5QFPqooqHLgfN5mnDB7PNT4=";
-    public static final Integer JWT_ACCESS_EXPIRATION = 1;
-    public static final Integer JWT_REFRESH_EXPIRATION = 60;
+    public static final Integer JWT_ACCESS_EXPIRATION = 60;
+    public static final Integer JWT_REFRESH_EXPIRATION = 3;
     public static final String TOKEN_PATTERN = "Bearer ";
     //END
 

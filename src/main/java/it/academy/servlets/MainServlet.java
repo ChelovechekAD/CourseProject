@@ -4,6 +4,7 @@ import it.academy.commands.Command;
 import it.academy.commands.factory.CommandEnum;
 import it.academy.commands.factory.CommandFactory;
 import it.academy.utilities.Constants;
+import it.academy.utilities.HibernateUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;

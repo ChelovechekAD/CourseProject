@@ -29,7 +29,7 @@ public class JwtProvider {
         final LocalDateTime now = LocalDateTime.now();
         final Instant accessExpirationInstant = now.plusMinutes(JWT_ACCESS_EXPIRATION)
                 .atZone(ZoneId.systemDefault()).toInstant();
-        final Instant refreshExpirationInstant = now.plusMinutes(JWT_REFRESH_EXPIRATION)
+        final Instant refreshExpirationInstant = now.plusDays(JWT_REFRESH_EXPIRATION)
                 .atZone(ZoneId.systemDefault()).toInstant();
         this.jwtAccessExpiration = Date.from(accessExpirationInstant);
         this.jwtRefreshExpiration = Date.from(refreshExpirationInstant);
